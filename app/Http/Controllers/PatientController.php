@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\User;
+use App\Models\User_phone;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -15,6 +17,8 @@ class PatientController extends Controller
     public function index()
     {
         //
+        $patients = Patient::all();
+        return view('patients.index',["users"=>$patients]);
     }
 
     /**
@@ -25,6 +29,7 @@ class PatientController extends Controller
     public function create()
     {
         //
+        return view("patients.store");
     }
 
     /**
@@ -36,6 +41,22 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         //
+        $user = new User;
+        $user->username = $request->username;
+        $user->password = $request->password;
+        $user->fname = $request->fname;
+        $user->lname = $request->lname;
+        $user->gender = $request->gender;
+        $user->save();
+        $user = User::all()->last();
+        $user_phone = new User_phone;
+        $user_phone->user_id = $user->id;
+        $user_phone->phone = $request->phone;
+        $user_phone->save();
+        $patien = new Patient;
+        $patien->id = $user->id;
+        $patien->save();
+        return redirect("/patients");
     }
 
     /**
@@ -44,9 +65,11 @@ class PatientController extends Controller
      * @param  \App\Models\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function show(Patient $patient)
+    public function show($id)
     {
         //
+        $patient = Patient::find($id);
+        return view("patients.show",["user"=>$patient]);
     }
 
     /**
@@ -78,8 +101,11 @@ class PatientController extends Controller
      * @param  \App\Models\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Patient $patient)
+    public function destroy($id)
     {
         //
+        Patient::find($id)->delete();
+        User::find($id)->delete();
+        return redirect('/patients');
     }
 }

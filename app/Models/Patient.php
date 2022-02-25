@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Patient extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $fillable = [
         'id',
     ];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'id');
     }
     public function feedbacks()
     {

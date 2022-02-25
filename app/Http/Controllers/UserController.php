@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -14,6 +15,8 @@ class UserController extends Controller
     public function index()
     {
         //
+        $users = User::all();
+        return view('users.index',["users"=>$users]);
     }
 
     /**
@@ -23,7 +26,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view("users.store");
     }
 
     /**
@@ -34,7 +37,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validation
+        $user = new User;
+        $user->username = $request->username;
+        $user->password = $request->password;
+        $user->fname = $request->fname;
+        $user->lname = $request->lname;
+        $user->gender = $request->gender;
+        $user->save();
+        return redirect("/users");
     }
 
     /**
@@ -46,6 +57,9 @@ class UserController extends Controller
     public function show($id)
     {
         //
+
+        $user = User::find($id);
+        return view("users.show",["user"=>$user]);
     }
 
     /**
@@ -80,5 +94,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        User::find($id)->delete();
+        return redirect('/users');
     }
 }
