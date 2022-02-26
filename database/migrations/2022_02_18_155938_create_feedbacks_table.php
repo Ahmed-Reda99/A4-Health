@@ -15,11 +15,11 @@ class CreateFeedbacksTable extends Migration
     {
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->unsignedBigInteger('patient_id');
-            $table->unsignedBigInteger('doc_id');
-            $table->enum('rate', [1,2,3,4,5]);
+            $table->unsignedBigInteger('doctor_id');
+            $table->enum('rate' , [1,2,3,4,5]);
             $table->text('message');
             $table->foreign('patient_id')->references('id')->on('patients');
-            $table->foreign('doc_id')->references('id')->on('doctors');
+            $table->foreign('doctor_id')->references('id')->on('doctors');
         });
     }
 

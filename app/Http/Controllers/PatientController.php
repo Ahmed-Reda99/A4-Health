@@ -48,7 +48,6 @@ class PatientController extends Controller
         $user->lname = $request->lname;
         $user->gender = $request->gender;
         $user->save();
-        $user = User::all()->last();
         $user_phone = new User_phone;
         $user_phone->user_id = $user->id;
         $user_phone->phone = $request->phone;
@@ -107,5 +106,6 @@ class PatientController extends Controller
         Patient::find($id)->delete();
         User::find($id)->delete();
         return redirect('/patients');
+        
     }
 }
