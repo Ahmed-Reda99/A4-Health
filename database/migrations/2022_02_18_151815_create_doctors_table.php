@@ -15,6 +15,7 @@ class CreateDoctorsTable extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->unsignedBigInteger('id');
+            $table->enum('title', ['professor', 'lecturer', 'consultant', 'specialist']);
             $table->text('description');
             $table->string('img_name');
             $table->string('street');

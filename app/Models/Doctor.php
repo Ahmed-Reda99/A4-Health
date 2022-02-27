@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     use HasFactory;
-    protected $fillable = [
+    public $timestamps = false;
+
+
+        protected $fillable = [
         'id',
         'description',
         'img_name',
@@ -19,7 +22,7 @@ class Doctor extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id');
     }
 
     public function offers()

@@ -18,10 +18,10 @@ class CreateAppointmentsTable extends Migration
             $table->time('start_time');
             $table->date('date');
             $table->integer('patient_limit');
-            $table->time('examination_time');
-            $table->unsignedBigInteger('doc_id');
-            $table->unique(['doc_id', 'date','start_time']);
-            $table->foreign('doc_id')->references('id')->on('doctors');
+            $table->integer('examination_time');
+            $table->unsignedBigInteger('doctor_id');
+            $table->unique(['doctor_id', 'date','start_time']);
+            $table->foreign('doctor_id')->references('id')->on('doctors');
         });
     }
 

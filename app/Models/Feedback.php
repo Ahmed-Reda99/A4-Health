@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feedback extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'patient_id',
-        'doc_id',
+        'doctor_id',
         'rate',
         'message',
     ];

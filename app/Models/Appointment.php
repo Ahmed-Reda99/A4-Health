@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Appointment extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
     protected $fillable = [
         'start_time',
         'date',
         'patient_limit',
         'examination_time',
-        'doc_id',
+        'doctor_id',
     ];
 
     public function doctor()
