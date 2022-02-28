@@ -29,10 +29,10 @@ Route::delete('/users/{id}',[UserController::class,"destroy"]);
 
 //
 Route::get('/patients',[PatientController::class,"index"]);
-Route::get('/patients/create',[PatientController::class,"create"]);
+// Route::get('/patients/create',[PatientController::class,"create"]);
 Route::post('/patients',[PatientController::class,"store"]);
 Route::get('/patients/{id}',[PatientController::class,"show"]);
-Route::get('/patients/{id}/edit',[PatientController::class,"edit"]);
+// Route::get('/patients/{id}/edit',[PatientController::class,"edit"]);
 Route::patch('/patients/{id}',[PatientController::class,"update"]);
 Route::delete('/patients/{id}',[PatientController::class,"destroy"]);
 
@@ -47,3 +47,6 @@ Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])
 Route::get('/doctors/{id}/reservations',[ReservationController::class,"indexDoctor"]);
 
 
+Route::get('/token', function () {
+    return csrf_token(); 
+});

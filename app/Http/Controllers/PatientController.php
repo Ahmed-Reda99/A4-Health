@@ -5,6 +5,7 @@ use App\Models\Patient;
 use App\Models\User;
 use App\Models\User_phone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
@@ -16,9 +17,16 @@ class PatientController extends Controller
      */
     public function index()
     {
-        //
-        $patients = Patient::all();
-        return view('patients.index',["users"=>$patients]);
+        // apply resource
+        $patients =  Patient::all();
+        $patientsData = array();
+        foreach ($patients as $patient) 
+        {
+            array_push($patientsData,$patient->user);
+        }
+        return $patientsData;
+        // return view('patients.index',["users"=>$patients]);
+        
     }
 
     /**
@@ -29,7 +37,8 @@ class PatientController extends Controller
     public function create()
     {
         //
-        return view("patients.store");
+
+        //return view("patients.store");
     }
 
     /**
@@ -51,7 +60,7 @@ class PatientController extends Controller
             ]);
             $user = new User;
             $user->username = $request->username;
-            $user->password = $request->password;
+            $user->password = Hash::make($request->password);
             $user->fname = $request->fname;
             $user->lname = $request->lname;
             $user->gender = $request->gender;
@@ -63,13 +72,12 @@ class PatientController extends Controller
             $patien = new Patient;
             $patien->id = $user->id;
             $patien->save();
-            return redirect("/patients");
         }catch(ValidationException $ex)
         {
             return $ex->errors();
         }
         
-        
+        return "inserted";
     }
 
     /**
@@ -82,7 +90,14 @@ class PatientController extends Controller
     {
         //
         $patient = Patient::find($id);
-        return view("patients.show",["user"=>$patient]);
+        $patient = [
+            'fname'=>$patient->user->fname,
+            'lname'=>$patient->user->lname,
+            'gender'=>$patient->user->gender,
+            'phone'=>$patient->user->phones
+        ];
+        // return view("patients.show",["user"=>$patient]);
+        return $patient;
     }
 
     /**
@@ -94,6 +109,7 @@ class PatientController extends Controller
     public function edit(Patient $patient)
     {
         //
+        //return view(patients.edit);
     }
 
     /**
@@ -103,9 +119,17 @@ class PatientController extends Controller
      * @param  \App\Models\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Patient $patient)
+    public function update(Request $request, $id)
     {
         //
+        $user = User::find($id);
+
+        $user->password = Hash::make($request->password);
+        $user->fname = $request->fname;
+        $user->lname = $request->lname;
+        $user->save();
+        return "updated";
+
     }
 
     /**
@@ -119,7 +143,8 @@ class PatientController extends Controller
         //
         Patient::find($id)->delete();
         User::find($id)->delete();
-        return redirect('/patients');
+        // return redirect('/patients');
+        return "deleted";
         
     }
 }
