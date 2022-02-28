@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
@@ -45,6 +46,17 @@ Route::patch('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationC
 Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 Route::get('/patients/{id}/reservations',[ReservationController::class,"index"]);
 Route::get('/doctors/{id}/reservations',[ReservationController::class,"indexDoctor"]);
+
+
+
+//
+// Route::get('/doctors/{id}/offers/create',[OfferController::class,"create"]);
+Route::post('/doctors/{id}/offers',[OfferController::class,"store"]);
+Route::get('/doctors/{id}/offers',[OfferController::class,"show"]);
+// Route::get('/doctors/{id}/offers/{id}/edit',[OfferController::class,"edit"]);
+Route::patch('/doctors/{id}/offers/{offer_id}',[OfferController::class,"update"]);
+Route::delete('/doctors/{id}/offers/{offer_id}',[OfferController::class,"destroy"]);
+Route::get('/doctors/{id}/offers',[OfferController::class,"index"]);
 
 
 Route::get('/token', function () {

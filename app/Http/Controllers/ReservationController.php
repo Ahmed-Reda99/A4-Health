@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ReservationController extends Controller
 {
@@ -41,11 +43,23 @@ class ReservationController extends Controller
     public function store($id,Request $request)
     {
         //possible validation
-        $newReservation = new Reservation;
-        $newReservation->appointment_id = $request->appointment_id;
-        $newReservation->patient_time = $request->patient_time;
-        $newReservation->patient_id = $id;
-        $newReservation->save();
+        try
+        {
+            $this->validate($request, [
+                'patient_time' => Rule::unique('reservations')->where(function ($query){
+                    global $request;
+                    return $query->where('appointment_id','=',$request->appointment_id);
+                })
+            ]);
+            $newReservation = new Reservation;
+            $newReservation->appointment_id = $request->appointment_id;
+            $newReservation->patient_time = $request->patient_time;
+            $newReservation->patient_id = $id;
+            $newReservation->save();
+        }catch(ValidationException $ex)
+        {
+            return $ex->errors();
+        }
         // return redirect("/patients/{$id}/reservations");
         return "inserted";
         
@@ -59,7 +73,7 @@ class ReservationController extends Controller
      */
     public function show($id,$appointment_id,$time)
     {
-        //
+        
         $reservation = Reservation::where('patient_id','=',$id)
         ->where('appointment_id', '=', $appointment_id)
         ->where('patient_time', '=', $time)->first();
@@ -100,10 +114,22 @@ class ReservationController extends Controller
         // ->where('patient_time', '=', $time)->first();
         // $reservation->patient_time = $request->patient_time;
         // $reservation->save();
-        Reservation::where('patient_id','=',$id)
-        ->where('appointment_id', '=', $appointment_id)
-        ->where('patient_time', '=', $time)
-        ->update(['patient_time' => $request->patient_time]);
+        try
+        {
+            $this->validate($request, [
+                'patient_time' => Rule::unique('reservations')->where(function ($query){
+                    global $request;
+                    return $query->where('appointment_id','=',$request->appointment_id);
+                })
+            ]);
+            Reservation::where('patient_id','=',$id)
+            ->where('appointment_id', '=', $appointment_id)
+            ->where('patient_time', '=', $time)
+            ->update(['patient_time' => $request->patient_time]);
+        }catch(ValidationException $ex)
+        {
+            return $ex->errors();
+        }
         return "updated";
     }
 
