@@ -44,7 +44,7 @@ div.text a {
     margin-right: 20px;
 }
 
-div.text a:hover {
+div.text a:hover h3{
     color: red;
     text-decoration: underline; 
 }

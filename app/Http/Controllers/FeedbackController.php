@@ -4,80 +4,68 @@ namespace App\Http\Controllers;
 
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use App\Models\Appointment;
+use Illuminate\Validation\ValidationException;
 
 class FeedbackController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    
+    public function index($doctor_id)
     {
-        //
+        return Feedback::where('doctor_id', $doctor_id)->get();
+        // $doctor = Doctor::find($doctor_id);
+        // return $doctor->feedbacks;
+    }
+    
+    
+    public function create($patient_id, $appointment_id, $time)
+    {
+        // return create view
+    }
+    
+    
+    public function store($patient_id, $appointment_id, $time, Request $request)
+    {
+        
+        try {
+            
+            $request->validate([
+                "rate"=>"bail|required|in:1,2,3,4,5"
+            ]);
+            
+            $feedback = new Feedback;
+            $feedback->patient_id = $patient_id;
+            $feedback->doctor_id = Appointment::find($appointment_id)->doctor->id;
+            $feedback->rate = $request->rate;
+            $feedback->message = $request->message;
+            $feedback->save();
+           
+        } catch (ValidationException $e) {
+            return $e->errors();
+        }
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Feedback  $feedback
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show(Feedback $feedback)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Feedback  $feedback
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit(Feedback $feedback)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Feedback  $feedback
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, Feedback $feedback)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Feedback  $feedback
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(Feedback $feedback)
     {
         //
