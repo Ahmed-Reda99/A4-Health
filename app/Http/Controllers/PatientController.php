@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Patient;
 use App\Models\User;
 use App\Models\User_phone;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
@@ -41,21 +41,35 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         //
-        $user = new User;
-        $user->username = $request->username;
-        $user->password = $request->password;
-        $user->fname = $request->fname;
-        $user->lname = $request->lname;
-        $user->gender = $request->gender;
-        $user->save();
-        $user_phone = new User_phone;
-        $user_phone->user_id = $user->id;
-        $user_phone->phone = $request->phone;
-        $user_phone->save();
-        $patien = new Patient;
-        $patien->id = $user->id;
-        $patien->save();
-        return redirect("/patients");
+        try
+        {
+            $this->validate($request, [
+                'username' => 'required|unique:users|min:4',
+                'password' => 'required|min:8',
+                'fname' => 'required|min:4',
+                'lname' => 'required|min:4',
+            ]);
+            $user = new User;
+            $user->username = $request->username;
+            $user->password = $request->password;
+            $user->fname = $request->fname;
+            $user->lname = $request->lname;
+            $user->gender = $request->gender;
+            $user->save();
+            $user_phone = new User_phone;
+            $user_phone->user_id = $user->id;
+            $user_phone->phone = $request->phone;
+            $user_phone->save();
+            $patien = new Patient;
+            $patien->id = $user->id;
+            $patien->save();
+            return redirect("/patients");
+        }catch(ValidationException $ex)
+        {
+            return $ex->errors();
+        }
+        
+        
     }
 
     /**

@@ -9,7 +9,7 @@ class Feedback extends Model
 {
     protected $fillable = [
         'patient_id',
-        'doc_id',
+        'doctor_id',
         'rate',
         'message',
     ];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,15 @@ Route::get('/patients/{id}',[PatientController::class,"show"]);
 Route::get('/patients/{id}/edit',[PatientController::class,"edit"]);
 Route::patch('/patients/{id}',[PatientController::class,"update"]);
 Route::delete('/patients/{id}',[PatientController::class,"destroy"]);
+
+//
+Route::get('/patients/{id}/reservations/create',[ReservationController::class,"create"]);
+Route::post('/patients/{id}/reservations',[ReservationController::class,"store"]);
+// Route::get('/patients/{id}/reservations/{id}',[ReservationController::class,"show"]);
+// Route::get('/patients/{id}/reservations/{id}/edit',[ReservationController::class,"edit"]);
+// Route::patch('/patients/{id}/reservations/{id}',[ReservationController::class,"update"]);
+Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
+Route::get('/patients/{id}/reservations',[ReservationController::class,"index"]);
+Route::get('/doctors/{id}/reservations',[ReservationController::class,"indexDoctor"]);
+
 

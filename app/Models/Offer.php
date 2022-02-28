@@ -10,7 +10,7 @@ class Offer extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'doc_id',
+        'doctor_id',
         'discount',
     ];
     public function doctor()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -12,9 +13,11 @@ class ReservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         //
+        $data = Reservation::where('patient_id', '=', $id)->get();
+        return view("reservations.index",["data"=>$data]);
     }
 
     /**
@@ -22,9 +25,10 @@ class ReservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
         //
+        return view("reservations.store",["id"=>$id]);
     }
 
     /**
@@ -33,9 +37,18 @@ class ReservationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($id,Request $request)
     {
         //
+        $newReservation = new Reservation;
+        $newReservation->appointment_id = $request->appointment_id;
+        $newReservation->patient_time = $request->patient_time;
+        $newReservation->patient_id = $id;
+        $newReservation->save();
+        // return "Patient name :".$newReservation->patient->user->fname." Doctor Name :".$newReservation->appointment->doctor->user->fname;
+        // return $newReservation->appointment->doctor->user->fname;
+        return redirect("/patients/{$id}/reservations");
+        
     }
 
     /**
@@ -78,8 +91,13 @@ class ReservationController extends Controller
      * @param  \App\Models\Reservation  $reservation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reservation $reservation)
+    public function destroy($id,$appointment_id,$time)
     {
         //
+        Reservation::where('patient_id','=',$id)
+        ->where('appointment_id', '=', $appointment_id)
+        ->where('patient_time', '=', $time)
+        ->delete();
+        return redirect("/patients/{$id}/reservations");
     }
 }
