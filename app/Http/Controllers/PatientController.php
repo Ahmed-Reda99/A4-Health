@@ -122,12 +122,22 @@ class PatientController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $user = User::find($id);
-
-        $user->password = Hash::make($request->password);
-        $user->fname = $request->fname;
-        $user->lname = $request->lname;
-        $user->save();
+        try
+        {
+            $this->validate($request, [
+                'password' => 'required|min:8',
+                'fname' => 'required|min:4',
+                'lname' => 'required|min:4'
+            ]);
+            $user = User::find($id);
+            $user->password = Hash::make($request->password);
+            $user->fname = $request->fname;
+            $user->lname = $request->lname;
+            $user->save();
+        }catch(ValidationException $ex)
+        {
+            return $ex->errors();
+        }
         return "updated";
 
     }

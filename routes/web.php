@@ -37,11 +37,11 @@ Route::patch('/patients/{id}',[PatientController::class,"update"]);
 Route::delete('/patients/{id}',[PatientController::class,"destroy"]);
 
 //
-Route::get('/patients/{id}/reservations/create',[ReservationController::class,"create"]);
+// Route::get('/patients/{id}/reservations/create',[ReservationController::class,"create"]);
 Route::post('/patients/{id}/reservations',[ReservationController::class,"store"]);
-// Route::get('/patients/{id}/reservations/{id}',[ReservationController::class,"show"]);
+Route::get('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"show"]);
 // Route::get('/patients/{id}/reservations/{id}/edit',[ReservationController::class,"edit"]);
-// Route::patch('/patients/{id}/reservations/{id}',[ReservationController::class,"update"]);
+Route::patch('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"update"]);
 Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 Route::get('/patients/{id}/reservations',[ReservationController::class,"index"]);
 Route::get('/doctors/{id}/reservations',[ReservationController::class,"indexDoctor"]);

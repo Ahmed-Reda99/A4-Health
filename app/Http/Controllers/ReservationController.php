@@ -17,7 +17,8 @@ class ReservationController extends Controller
     {
         //
         $data = Reservation::where('patient_id', '=', $id)->get();
-        return view("reservations.index",["data"=>$data]);
+        // return view("reservations.index",["data"=>$data]);
+        return $data;
     }
 
     /**
@@ -28,7 +29,7 @@ class ReservationController extends Controller
     public function create($id)
     {
         //
-        return view("reservations.store",["id"=>$id]);
+        // return view("reservations.store",["id"=>$id]);
     }
 
     /**
@@ -39,15 +40,14 @@ class ReservationController extends Controller
      */
     public function store($id,Request $request)
     {
-        //
+        //possible validation
         $newReservation = new Reservation;
         $newReservation->appointment_id = $request->appointment_id;
         $newReservation->patient_time = $request->patient_time;
         $newReservation->patient_id = $id;
         $newReservation->save();
-        // return "Patient name :".$newReservation->patient->user->fname." Doctor Name :".$newReservation->appointment->doctor->user->fname;
-        // return $newReservation->appointment->doctor->user->fname;
-        return redirect("/patients/{$id}/reservations");
+        // return redirect("/patients/{$id}/reservations");
+        return "inserted";
         
     }
 
@@ -57,9 +57,20 @@ class ReservationController extends Controller
      * @param  \App\Models\Reservation  $reservation
      * @return \Illuminate\Http\Response
      */
-    public function show(Reservation $reservation)
+    public function show($id,$appointment_id,$time)
     {
         //
+        $reservation = Reservation::where('patient_id','=',$id)
+        ->where('appointment_id', '=', $appointment_id)
+        ->where('patient_time', '=', $time)->first();
+        $reservationData = [
+            'patientName'=>$reservation->patient->user->fname,
+            'doctorName'=>$reservation->appointment->doctor->user->fname,
+            'date'=>$reservation->appointment->date,
+            'time'=>$reservation->patient_time
+        ];
+        // return view("patients.show",["user"=>$patient]);
+        return $reservationData;
     }
 
     /**
@@ -80,9 +91,20 @@ class ReservationController extends Controller
      * @param  \App\Models\Reservation  $reservation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reservation $reservation)
+    public function update(Request $request, $id,$appointment_id,$time)
     {
         //
+
+        // $reservation = Reservation::where('patient_id','=',$id)
+        // ->where('appointment_id', '=', $appointment_id)
+        // ->where('patient_time', '=', $time)->first();
+        // $reservation->patient_time = $request->patient_time;
+        // $reservation->save();
+        Reservation::where('patient_id','=',$id)
+        ->where('appointment_id', '=', $appointment_id)
+        ->where('patient_time', '=', $time)
+        ->update(['patient_time' => $request->patient_time]);
+        return "updated";
     }
 
     /**
@@ -98,6 +120,7 @@ class ReservationController extends Controller
         ->where('appointment_id', '=', $appointment_id)
         ->where('patient_time', '=', $time)
         ->delete();
-        return redirect("/patients/{$id}/reservations");
+        // return redirect("/patients/{$id}/reservations");
+        return "deleted";
     }
 }
