@@ -6,6 +6,8 @@ use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class AppointmentController extends Controller
 {
@@ -26,17 +28,41 @@ class AppointmentController extends Controller
     
     public function store(Request $request, $doctor_id)
     {
-        $appoint = new Appointment;
-        $appoint->start_time = $request->start_time;
-        // $appoint->date = Carbon::now()->toDateString(); //yyyy:mm:dd need to change timezone can be found in config/app.php
-        $appoint->date = date("Y-m-d");
-        $appoint->patient_limit = $request->patient_limit;
-        $appoint->examination_time = $request->examination_time;
-        $appoint->doctor_id = $doctor_id;
-        $appoint->save();
+                
+        try {
+
+            $request->validate([
+                "start_time"=>Rule::unique('appointments')->where(function ($query){
+                    global $request;
+                    return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
+                    
+                })
+            ]);
+            
+            $request->validate([
+                "start_time"=>"bail|required|date_format:H:i",
+                "date"=>"bail|required|date_format:Y-m-d",
+                "patient_limit"=>"bail|numeric",
+                "examination_time"=>"bail|required|numeric"
+                
+            ]);
+            
+            $appoint = new Appointment;
+            $appoint->start_time = $request->start_time;
+            //yyyy:mm:dd need to change timezone can be found in config/app.php
+            // $appoint->date = Carbon::now()->toDateString(); 
+            // $appoint->date = date("Y-m-d");
+            $appoint->date = $request->date;
+            $appoint->patient_limit = $request->patient_limit;
+            $appoint->examination_time = $request->examination_time;
+            $appoint->doctor_id = $doctor_id;
+            $appoint->save();
+
+        } catch (ValidationException $e) {
+            return $e->errors();
+        }
 
         return "inserted";
-
     }
 
     
@@ -60,12 +86,37 @@ class AppointmentController extends Controller
 
     public function update(Request $request, $doctor_id, $appointment_id)
     {
-        $appoint = Appointment::find($appointment_id);
-        $appoint->start_time = $request->start_time;
-        $appoint->date = $request->date;
-        $appoint->patient_limit = $request->patient_limit;
-        $appoint->examination_time = $request->examination_time;
-        $appoint->save();
+        
+        
+        try {
+            
+            $request->validate([
+                "start_time"=>Rule::unique('appointments')->where(function ($query){
+                    global $request;
+                    return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
+                    
+                })
+            ]);
+            
+            $request->validate([
+                "start_time"=>"bail|required|date_format:H:i",
+                "date"=>"bail|required|date_format:Y-m-d",
+                "patient_limit"=>"bail|numeric",
+                "examination_time"=>"bail|required|numeric"
+                
+            ]);
+            
+            $appoint = Appointment::find($appointment_id);
+            $appoint->start_time = $request->start_time;
+            $appoint->date = $request->date;
+            $appoint->patient_limit = $request->patient_limit;
+            $appoint->examination_time = $request->examination_time;
+            $appoint->save();
+            
+
+        } catch (ValidationException $e) {
+            return $e->errors();
+        }
 
         return "updated";
 

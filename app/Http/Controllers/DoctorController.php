@@ -52,7 +52,7 @@ class DoctorController extends Controller
 
             // instead of repeating the validation in store and update make a func in the user model
             
-            // DB::beginTransaction();
+            DB::beginTransaction();
 
             $user = new User;
             $user->username = $request->username;
@@ -77,15 +77,13 @@ class DoctorController extends Controller
             $doctor->fees = $request->fees;
             $doctor->save();
 
-            // DB::commit();
+            DB::commit();
 
         } catch (ValidationException $e) {
-            // DB::rollBack();
+            DB::rollBack();
             return $e->errors();
         }
         
-        
-
         return "inserted";
 
     }
@@ -130,26 +128,52 @@ class DoctorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        
+        
+        try {
+            
+            $request->validate([
+                "username"=>"bail|required|min:5|unique:users",
+                "password"=>"bail|required|min:8"
+            ],
+            [
+                "username.required"=>"hold on ma boi username is required",
+                "username.min"=>"username must be more than 5 charachters",
+                // "username.unique"=>"username already exists"
+            ]);
+            
+            
+            DB::beginTransaction();
 
-        $user->password = Hash::make($request->password);
-        $user->fname = $request->fname;
-        $user->lname = $request->lname;
-        $user->gender = $request->gender;
-        $user->save();
+            
+            $user = User::find($id);
+    
+            $user->password = Hash::make($request->password);
+            $user->fname = $request->fname;
+            $user->lname = $request->lname;
+            $user->gender = $request->gender;
+            $user->save();
+    
+            $doctor = $user->doctor;
+    
+            $doctor->description = $request->description;
+            $doctor->img_name = $request->img_name;
+            $doctor->street = $request->street;
+            $doctor->city = $request->city;
+            $doctor->specialization_id = 1 ;
+            $doctor->fees = $request->fees;
+            $doctor->save();
+            
 
-        $doctor = $user->doctor;
+            DB::commit();
 
-        $doctor->description = $request->description;
-        $doctor->img_name = $request->img_name;
-        $doctor->street = $request->street;
-        $doctor->city = $request->city;
-        $doctor->specialization_id = 1 ;
-        $doctor->fees = $request->fees;
-        $doctor->save();
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return $e->errors();
+        }
+
 
         return "updated";
-
     }
 
     /**

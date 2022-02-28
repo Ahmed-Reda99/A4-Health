@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DoctorController;
 use App\Models\Doctor;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\FeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,14 @@ Route::get("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentCon
 Route::get("/doctors/{doctor_id}/appointments/{appointment_id}/edit", [AppointmentController::class, "edit"]);
 Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"]);
 Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"]);
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
+Route::get("/patients/{patient_id}/reservations/{appointment_id}/{time}/review", [FeedbackController::class, "create"]);
+Route::post("/patients/{patient_id}/reservations/{appointment_id}/{time}", [FeedbackController::class, "store"]);
+// Route::delete("/doctors/{doctor_id}/reviews", [FeedbackController::class, "destroy"]); we need an id for the feedback
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 
