@@ -60,5 +60,5 @@ Route::get('/doctors/{id}/offers',[OfferController::class,"index"]);
 
 
 Route::get('/token', function () {
-    return csrf_token(); 
+    return csrf_token();
 });

@@ -55,6 +55,7 @@ class ReservationController extends Controller
             $newReservation->appointment_id = $request->appointment_id;
             $newReservation->patient_time = $request->patient_time;
             $newReservation->patient_id = $id;
+            $newReservation->status = "pending";
             $newReservation->save();
         }catch(ValidationException $ex)
         {
