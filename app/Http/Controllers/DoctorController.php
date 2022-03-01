@@ -6,7 +6,6 @@ use App\Models\Doctor;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\DoctorStoreRequest;
 use App\Models\User_phone;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
@@ -41,14 +40,18 @@ class DoctorController extends Controller
         try {
             
             $request->validate([
-                "username"=>"required|min:5|unique:users",
-                "password"=>"required|min:8"
+                "username"=>"required|min:4|unique:users",
+                "password"=>"required|min:8",
+                'fname' => 'required|min:4',
+                'lname' => 'required|min:4',
             ],
             [
                 "username.required"=>"hold on ma boi username is required",
                 "username.min"=>"username must be more than 5 charachters",
                 // "username.unique"=>"username already exists"
             ]);
+
+            
 
             // instead of repeating the validation in store and update make a func in the user model
             
