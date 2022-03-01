@@ -10,11 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
         // apply resource
@@ -29,11 +25,7 @@ class PatientController extends Controller
         
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
         //
@@ -41,13 +33,7 @@ class PatientController extends Controller
         //return view("patients.store");
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+        public function store(Request $request)
     {
         //
         try
@@ -80,12 +66,7 @@ class PatientController extends Controller
         return "inserted";
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show($id)
     {
         //
@@ -100,25 +81,14 @@ class PatientController extends Controller
         return $patient;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit(Patient $patient)
     {
         //
         //return view(patients.edit);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, $id)
     {
         //
@@ -142,12 +112,7 @@ class PatientController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy($id)
     {
         //
