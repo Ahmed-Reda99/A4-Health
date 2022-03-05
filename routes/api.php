@@ -24,14 +24,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get("login",function(){
-    return "you must login first";
+    return "you must login";
 })->name('login');
 
 
-Route::get("/doctors", [DoctorController::class, "index"])->middleware('auth:sanctum');
+Route::get("/doctors", [DoctorController::class, "index"])->middleware('auth:patient');
 
 
-Route::post('/login', function (Request $request) {
+Route::post('/login', function (Request $request) { 
     // $request->validate([
     //     'email' => 'required|email',
     //     'password' => 'required',
@@ -45,8 +45,10 @@ Route::post('/login', function (Request $request) {
         return ["error"=>"username or password is incorrect"];
     }
 
+    
     $userType = $user->doctor? "doctor" : "patient";
- 
-    return ["token"=>$user->createToken($request->device_name)->plainTextToken,
-            "type"=>$userType];
+    
+    if($userType == "patient") return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken];
+    return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken];
+    
 });

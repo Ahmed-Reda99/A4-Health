@@ -17,6 +17,11 @@ class DoctorController extends Controller
      */
     public function index()
     { 
+        // return auth()->user()->user->username;
+        // auth('doctor')
+        // auth()->guard('doctor')->id();
+        // auth()->guard('doctor')->user()->username;
+        // return Doctor::paginate(1);
         return Doctor::all();
     }
 
