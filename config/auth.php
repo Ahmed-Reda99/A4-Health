@@ -89,6 +89,8 @@ return [
             'model' => App\Models\Doctor::class,
         ],
 
+        // you can use driver => database and instead of model use table => table name
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
