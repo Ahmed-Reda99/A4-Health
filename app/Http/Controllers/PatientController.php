@@ -5,13 +5,14 @@ use App\Models\Patient;
 use App\Models\User;
 use App\Models\User_phone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
     
-    public function index()
+    public function index(Request $request)
     {
         // apply resource
         $patients =  Patient::all();
@@ -21,6 +22,7 @@ class PatientController extends Controller
             array_push($patientsData,$patient->user);
         }
         return $patientsData;
+        // return $request->user();
         // return view('patients.index',["users"=>$patients]);
         
     }
@@ -44,6 +46,7 @@ class PatientController extends Controller
                 'fname' => 'required|min:4',
                 'lname' => 'required|min:4',
             ]);
+            DB::beginTransaction();
             $user = new User;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
@@ -58,8 +61,10 @@ class PatientController extends Controller
             $patien = new Patient;
             $patien->id = $user->id;
             $patien->save();
+            DB::commit();
         }catch(ValidationException $ex)
         {
+            DB::rollBack();
             return $ex->errors();
         }
         

@@ -41,15 +41,15 @@ return [
             'provider' => 'users',
         ],
         'admin' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'admins',
         ],
         'patient' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'patients',
         ],
         'doctor' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'doctors',
         ],
     ],
