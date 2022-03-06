@@ -20,14 +20,15 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-
+//show Doctors Route
+Route::get("/doctors", [DoctorController::class, "index"]);
 
 Route::get("login",function(){
     return "you must login";
 })->name('login');
 
 
-Route::get("/doctors", [DoctorController::class, "index"])->middleware('auth:patient');
+// Route::get("/doctors", [DoctorController::class, "index"])->middleware('auth:patient');
 
 
 Route::post('/login', function (Request $request) { 

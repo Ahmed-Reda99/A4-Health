@@ -22,7 +22,36 @@ class DoctorController extends Controller
         // auth()->guard('doctor')->id();
         // auth()->guard('doctor')->user()->username;
         // return Doctor::paginate(1);
-        return Doctor::all();
+        // $doctorsInformation = Doctor::all();
+        $PaginatedData = Doctor::paginate(1);
+        $doctorsInformation = $PaginatedData->items();
+        $data = collect($doctorsInformation)->map(function($doctor)
+        {
+            $ratings = array();
+            foreach($doctor->feedbacks as $rating)
+            {
+               array_push($ratings,$rating->rate);
+            }
+            $average = array_sum($ratings) / count($ratings);
+            return 
+            [
+                'fname' => $doctor->user->fname,
+                'lname' => $doctor->user->lname,
+                'specialization' => $doctor->specialization->name,
+                'fees' => $doctor->fees,
+                'rating' => $average,
+                'city' => $doctor->city,
+                'street' => $doctor->street,
+                'gender' => $doctor->user->gender,
+                'img_name' => $doctor->img_name,
+            ];
+        });    
+        return
+        [
+            'data' => $data,
+            'next' => $PaginatedData->nextPageUrl(),
+            'previous' => $PaginatedData->previousPageUrl(),
+        ];
     }
 
     /**

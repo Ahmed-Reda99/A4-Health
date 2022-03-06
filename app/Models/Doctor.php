@@ -12,6 +12,7 @@ class Doctor extends Model
     public $timestamps = false;
     protected $fillable = [
         'id',
+        'title',
         'description',
         'img_name',
         'street',
