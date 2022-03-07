@@ -23,10 +23,9 @@ class DoctorController extends Controller
         // auth()->guard('doctor')->user()->username;
         // return Doctor::paginate(1);
         // $doctorsInformation = Doctor::all();
-        $PaginatedData = Doctor::paginate(1);
-        $doctorsInformation = $PaginatedData->items();
+        $doctorsInformation = Doctor::all();
         $data = collect($doctorsInformation)->map(function($doctor)
-        {
+        { 
             $ratings = array();
             foreach($doctor->feedbacks as $rating)
             {
@@ -35,6 +34,7 @@ class DoctorController extends Controller
             $average = array_sum($ratings) / count($ratings);
             return 
             [
+                'id' => $doctor->id,
                 'fname' => $doctor->user->fname,
                 'lname' => $doctor->user->lname,
                 'specialization' => $doctor->specialization->name,
@@ -44,14 +44,15 @@ class DoctorController extends Controller
                 'street' => $doctor->street,
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
+                'appointment' => $doctor->appointments
             ];
         });    
-        return
-        [
-            'data' => $data,
-            'next' => $PaginatedData->nextPageUrl(),
-            'previous' => $PaginatedData->previousPageUrl(),
-        ];
+        return $data;
+        // [
+        //     'data' => $data,
+        //     'next' => $PaginatedData->nextPageUrl(),
+        //     'previous' => $PaginatedData->previousPageUrl(),
+        // ];
     }
 
     /**
@@ -131,21 +132,36 @@ class DoctorController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        
-        $doctor = [
-            'fname'=>$user->fname,
-            'lname'=>$user->lname,
-            'gender'=>$user->gender,
-            'description'=>$user->doctor->description,
-            'img_name'=>$user->doctor->img_name,
-            'street'=>$user->doctor->street,
-            'city'=>$user->doctor->city,
-            'specialization'=>$user->doctor->specialization->name,
-            'fees'=>$user->doctor->fees,
-            'phone'=>$user->phones
+        $doctor = Doctor::find($id);
+        // doctor info
+        //feedback info
+        //appointments
+
+        $Feedbacks = collect($doctor->feedbacks)->map(function($oneFeedback)
+        {
+            return
+            [
+                'patientName' => $oneFeedback->patient->user->fname,
+                'rate' => $oneFeedback->rate,
+                'message' => $oneFeedback->message
+            ];
+        });
+        $data = [
+            'fname'=>$doctor->user->fname,
+            'lname'=>$doctor->user->lname,
+            'gender'=>$doctor->user->gender,
+            'description'=>$doctor->description,
+            'img_name'=>$doctor->img_name,
+            'street'=>$doctor->street,
+            'city'=>$doctor->city,
+            'specialization'=>$doctor->specialization->name,
+            'fees'=>$doctor->fees,
+            'phone'=>$doctor->phones,
+            'appointment' => $doctor->appointments,
+            'feedback' => $Feedbacks
+
         ];
-        return $doctor;
+        return $data;
     }
 
     /**

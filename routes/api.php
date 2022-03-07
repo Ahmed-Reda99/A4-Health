@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 
 //show Doctors Route
 Route::get("/doctors", [DoctorController::class, "index"]);
+Route::get("/doctors/{id}", [DoctorController::class, "show"]);
 
 Route::get("login",function(){
     return "you must login";
