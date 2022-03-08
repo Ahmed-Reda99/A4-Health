@@ -14,6 +14,7 @@ class CreateFeedbacksTable extends Migration
     public function up()
     {
         Schema::create('feedback', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('doctor_id');
             $table->enum('rate' , [1,2,3,4,5]);

@@ -52,7 +52,7 @@ class DoctorController extends Controller
             ],
             [
                 "username.required"=>"hold on ma boi username is required",
-                "username.min"=>"username must be more than 5 charachters",
+                "username.min"=>"username must be more than 4 charachters",
                 // "username.unique"=>"username already exists"
             ]);
 
