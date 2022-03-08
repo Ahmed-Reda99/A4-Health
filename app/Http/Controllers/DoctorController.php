@@ -133,21 +133,13 @@ class DoctorController extends Controller
      */
     public function show($id)
     {
+        if(auth()->guard('doctor')->user())
+        {
+            $id = auth()->guard('doctor')->user()->id;
+        }
         $doctor = Doctor::find($id);
-        // doctor info
-        //feedback info
-        //appointments
-
-        // $Feedbacks = collect($doctor->feedbacks)->map(function($oneFeedback)
-        // {
-        //     return
-        //     [
-        //         'patientName' => $oneFeedback->patient->user->fname,
-        //         'rate' => $oneFeedback->rate,
-        //         'message' => $oneFeedback->message
-        //     ];
-        // });
         $data = [
+            'username'=>$doctor->user->username,
             'fname'=>$doctor->user->fname,
             'lname'=>$doctor->user->lname,
             'gender'=>$doctor->user->gender,
@@ -158,7 +150,7 @@ class DoctorController extends Controller
             'specialization'=>$doctor->specialization->name,
             'title' => $doctor->title,
             'fees'=>$doctor->fees,
-            'phone'=>$doctor->phones,
+            'phone'=>$doctor->user->phones,
             'appointment' => $doctor->appointments
 
         ];
@@ -183,41 +175,38 @@ class DoctorController extends Controller
     public function update(Request $request, $id)
     {
         
-        
         try {
-            
+            $id = auth()->guard('doctor')->user()->id;
             $request->validate([
-                "username"=>"bail|required|min:5|unique:users",
-                "password"=>"bail|required|min:8"
-            ],
-            [
-                "username.required"=>"hold on ma boi username is required",
-                "username.min"=>"username must be more than 5 charachters",
-                // "username.unique"=>"username already exists"
+                "fname" => "bail|required",
+                "lname" => "bail|required",
+                "img_name" => "bail|required",
+                "description" => "bail|required",
+                "street" => "bail|required",
+                "city" => "bail|required",
+                "fees" => "bail|required",
+                'phone' => 'required'
             ]);
             
             
             DB::beginTransaction();
-
-            
             $user = User::find($id);
-    
-            $user->password = Hash::make($request->password);
+            // !!!!!
             $user->fname = $request->fname;
             $user->lname = $request->lname;
-            $user->gender = $request->gender;
             $user->save();
-    
             $doctor = $user->doctor;
-    
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
-            $doctor->specialization_id = 1 ;
             $doctor->fees = $request->fees;
+            foreach($request->phone as $onePhone)
+            {
+                dd($id,$onePhone);
+                User_phone::insertOrIgnore(['user_id'=>$id,'phone'=>$onePhone]);
+            }
             $doctor->save();
-            
 
             DB::commit();
 

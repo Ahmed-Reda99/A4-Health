@@ -25,28 +25,28 @@ use Illuminate\Support\Facades\Auth;
 
 //Search Page
 Route::get("/doctors", [DoctorController::class, "index"]);
-Route::post('/patients/reservations/{id}',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
-Route::get("/doctors/{id}", [DoctorController::class, "show"])->whereNumber('id');
+Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
+Route::get("/doctors/{id}/info", [DoctorController::class, "show"])->whereNumber('id');
 Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
 
 //Patient Profile
 Route::get('/patients/{id}',[PatientController::class,"show"])->middleware('auth:patient')->whereNumber('id');
 Route::patch('/patients/{id}',[PatientController::class,"update"])->middleware('auth:patient')->whereNumber('id');
-Route::patch('/patients/password/{id}',[PatientController::class,"updatePassword"])->middleware('auth:patient')->whereNumber('id');
-Route::get('/patients/reservations/{id}',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
-Route::delete('/patients/reservations/{id}/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
+Route::patch('/patients/{id}/password',[PatientController::class,"updatePassword"])->middleware('auth:patient')->whereNumber('id');
+Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
+Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 
 
 //Doctor Profile
 Route::get("/doctors/{id}", [DoctorController::class, "show"])->middleware('auth:doctor')->whereNumber('id');
-Route::put("/doctors/{id}", [DoctorController::class, "update"]);
+Route::put("/doctors/{id}", [DoctorController::class, "update"])->middleware('auth:doctor')->whereNumber('id');
 
-Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"]);
-Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"]);
-Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"]);
-Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"]);
+Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"])->middleware('auth:doctor')->whereNumber('id');
+Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->middleware('auth:doctor')->whereNumber('id');
+Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->middleware('auth:doctor')->whereNumber('id');
+Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->middleware('auth:doctor')->whereNumber('id');
 
-Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
+Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"]);
 
 
 Route::get("login",function(){

@@ -13,6 +13,10 @@ class FeedbackController extends Controller
     
     public function index($doctor_id)
     {
+        if(auth()->guard('doctor')->user())
+        {
+            $doctor_id = auth()->guard('doctor')->user()->id;
+        }
         $data = Feedback::where('doctor_id', $doctor_id)->get();
         $Feedbacks = collect($data)->map(function($oneFeedback)
         {
