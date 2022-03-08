@@ -13,9 +13,8 @@ class ReservationController extends Controller
     
     public function index($id)
     {
-        //
+        $id = auth()->guard('patient')->user()->id;
         $data = Reservation::where('patient_id', '=', $id)->get();
-        // return view("reservations.index",["data"=>$data]);
         return $data;
     }
 
@@ -109,11 +108,11 @@ class ReservationController extends Controller
     public function destroy($id,$appointment_id,$time)
     {
         //
+        $id = auth()->guard('patient')->user()->id;
         Reservation::where('patient_id','=',$id)
         ->where('appointment_id', '=', $appointment_id)
         ->where('patient_time', '=', $time)
         ->delete();
-        // return redirect("/patients/{$id}/reservations");
         return "deleted";
     }
 }

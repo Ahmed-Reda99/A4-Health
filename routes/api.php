@@ -7,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -20,9 +21,17 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-//show Doctors Route
+//Search Page
 Route::get("/doctors", [DoctorController::class, "index"]);
-Route::get("/doctors/{id}", [DoctorController::class, "show"]);
+Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
+Route::get("/doctors/{id}", [DoctorController::class, "show"])->whereNumber('id');
+
+//Patient Profile
+Route::get('/patients/{id}',[PatientController::class,"show"])->middleware('auth:patient')->whereNumber('id');
+Route::patch('/patients/{id}',[PatientController::class,"update"])->middleware('auth:patient')->whereNumber('id');
+Route::patch('/patients/password/{id}',[PatientController::class,"updatePassword"])->middleware('auth:patient')->whereNumber('id');
+Route::get('/patients/reservations/{id}',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
+Route::delete('/patients/reservations/{id}/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 
 Route::get("login",function(){
     return "you must login";
@@ -46,7 +55,13 @@ Route::post('/login', function (Request $request) {
     }
     $userType = $user->doctor? "doctor" : "patient";
     
-    if($userType == "patient") return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken];
-    return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken];
+    if($userType == "patient")
+    {
+        return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken];
+    }else
+    {
+        return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken];
+    }
+    
     
 });

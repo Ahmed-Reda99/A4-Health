@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class PatientController extends Controller
 {
@@ -75,6 +76,7 @@ class PatientController extends Controller
     public function show($id)
     {
         //
+        $id = auth()->guard('patient')->user()->id;
         $patient = Patient::find($id);
         $patient = [
             'fname'=>$patient->user->fname,
@@ -96,25 +98,53 @@ class PatientController extends Controller
     
     public function update(Request $request, $id)
     {
-        //
         try
         {
-            $this->validate($request, [
-                'password' => 'required|min:8',
+            DB::beginTransaction();
+            $id = auth()->guard('patient')->user()->id;
+            $this->validate($request,[
                 'fname' => 'required|min:4',
-                'lname' => 'required|min:4'
+                'lname' => 'required|min:4',
+                'phone' => 'required',
             ]);
             $user = User::find($id);
-            $user->password = Hash::make($request->password);
             $user->fname = $request->fname;
             $user->lname = $request->lname;
+            foreach($request->phone as $onePhone)
+            {
+                User_phone::insertOrIgnore(['user_id'=>$id,'phone'=>$onePhone]);
+            }
+            $user->save();
+            DB::commit();
+        }catch(ValidationException $ex)
+        {
+            DB::rollBack();
+            return $ex->errors();
+        }
+        return "updated";
+
+    }
+    function updatePassword(Request $request,$id)
+    {
+        try
+        {
+            $id = auth()->guard('patient')->user()->id;
+            $this->validate($request,[
+                'old_password' => 'required',
+                'password' => 'required|confirmed',
+            ]);
+            $user = User::find($id);
+            if (! Hash::check($request->old_password, $user->password)) {
+        
+                return ["error"=>"password is incorrect"];
+            }
+            $user->password = Hash::make($request->password);
             $user->save();
         }catch(ValidationException $ex)
         {
             return $ex->errors();
         }
         return "updated";
-
     }
 
     
