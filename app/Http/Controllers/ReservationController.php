@@ -15,7 +15,18 @@ class ReservationController extends Controller
     {
         $id = auth()->guard('patient')->user()->id;
         $data = Reservation::where('patient_id', '=', $id)->get();
-        return $data;
+        $reservations = collect($data)->map(function($oneReservation)
+        {
+            return
+            [
+                'appointment_id' =>$oneReservation->appointment_id,
+                'patient_time' => $oneReservation->patient_time,
+                'doctorName' => $oneReservation->appointment->doctor->user->fname." ".$oneReservation->appointment->doctor->user->lname,
+                'date' => $oneReservation->appointment->date,
+                'status' => $oneReservation->status
+            ];
+        });
+        return $reservations;
     }
 
     
@@ -32,11 +43,13 @@ class ReservationController extends Controller
         try
         {
             $this->validate($request, [
+                'appointment_id' => 'required',
                 'patient_time' => Rule::unique('reservations')->where(function ($query){
                     global $request;
                     return $query->where('appointment_id','=',$request->appointment_id);
                 })
             ]);
+            $id = auth()->guard('patient')->user()->id;
             $newReservation = new Reservation;
             $newReservation->appointment_id = $request->appointment_id;
             $newReservation->patient_time = $request->patient_time;
@@ -47,8 +60,7 @@ class ReservationController extends Controller
         {
             return $ex->errors();
         }
-        // return redirect("/patients/{$id}/reservations");
-        return "inserted";
+        return "done";
         
     }
 
@@ -79,12 +91,6 @@ class ReservationController extends Controller
     public function update(Request $request, $id,$appointment_id,$time)
     {
         //
-
-        // $reservation = Reservation::where('patient_id','=',$id)
-        // ->where('appointment_id', '=', $appointment_id)
-        // ->where('patient_time', '=', $time)->first();
-        // $reservation->patient_time = $request->patient_time;
-        // $reservation->save();
         try
         {
             $this->validate($request, [

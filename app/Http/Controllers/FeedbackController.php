@@ -13,9 +13,17 @@ class FeedbackController extends Controller
     
     public function index($doctor_id)
     {
-        return Feedback::where('doctor_id', $doctor_id)->get();
-        // $doctor = Doctor::find($doctor_id);
-        // return $doctor->feedbacks;
+        $data = Feedback::where('doctor_id', $doctor_id)->get();
+        $Feedbacks = collect($data)->map(function($oneFeedback)
+        {
+            return
+            [
+                'patientName' => $oneFeedback->patient->user->fname,
+                'rate' => $oneFeedback->rate,
+                'message' => $oneFeedback->message
+            ];
+        });
+        return $Feedbacks;
     }
     
     

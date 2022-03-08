@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\FeedbackController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -23,8 +25,9 @@ use Illuminate\Support\Facades\Auth;
 
 //Search Page
 Route::get("/doctors", [DoctorController::class, "index"]);
-Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
+Route::post('/patients/reservations/{id}',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
 Route::get("/doctors/{id}", [DoctorController::class, "show"])->whereNumber('id');
+Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
 
 //Patient Profile
 Route::get('/patients/{id}',[PatientController::class,"show"])->middleware('auth:patient')->whereNumber('id');
@@ -32,6 +35,19 @@ Route::patch('/patients/{id}',[PatientController::class,"update"])->middleware('
 Route::patch('/patients/password/{id}',[PatientController::class,"updatePassword"])->middleware('auth:patient')->whereNumber('id');
 Route::get('/patients/reservations/{id}',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
 Route::delete('/patients/reservations/{id}/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
+
+
+//Doctor Profile
+Route::get("/doctors/{id}", [DoctorController::class, "show"])->middleware('auth:doctor')->whereNumber('id');
+Route::put("/doctors/{id}", [DoctorController::class, "update"]);
+
+Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"]);
+Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"]);
+Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"]);
+Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"]);
+
+Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
+
 
 Route::get("login",function(){
     return "you must login";

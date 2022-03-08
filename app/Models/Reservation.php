@@ -13,6 +13,7 @@ class Reservation extends Model
         'appointment_id',
         'patient_time',
         'patient_id',
+        'status'
     ];
     public function appointment()
     {

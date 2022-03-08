@@ -138,15 +138,15 @@ class DoctorController extends Controller
         //feedback info
         //appointments
 
-        $Feedbacks = collect($doctor->feedbacks)->map(function($oneFeedback)
-        {
-            return
-            [
-                'patientName' => $oneFeedback->patient->user->fname,
-                'rate' => $oneFeedback->rate,
-                'message' => $oneFeedback->message
-            ];
-        });
+        // $Feedbacks = collect($doctor->feedbacks)->map(function($oneFeedback)
+        // {
+        //     return
+        //     [
+        //         'patientName' => $oneFeedback->patient->user->fname,
+        //         'rate' => $oneFeedback->rate,
+        //         'message' => $oneFeedback->message
+        //     ];
+        // });
         $data = [
             'fname'=>$doctor->user->fname,
             'lname'=>$doctor->user->lname,
@@ -159,8 +159,7 @@ class DoctorController extends Controller
             'title' => $doctor->title,
             'fees'=>$doctor->fees,
             'phone'=>$doctor->phones,
-            'appointment' => $doctor->appointments,
-            'feedback' => $Feedbacks
+            'appointment' => $doctor->appointments
 
         ];
         return $data;
