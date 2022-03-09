@@ -174,7 +174,6 @@ class DoctorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         try {
             $id = auth()->guard('doctor')->user()->id;
             $request->validate([

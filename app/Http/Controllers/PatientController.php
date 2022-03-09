@@ -157,4 +157,10 @@ class PatientController extends Controller
         return "deleted";
         
     }
+    public function showNotification($id)
+    {
+        $id = auth()->guard('patient')->user()->id;
+        $user = User::find($id);
+        return $user->notifications;
+    }
 }

@@ -36,6 +36,8 @@ Route::patch('/patients/{id}/password',[PatientController::class,"updatePassword
 Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
 Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 
+Route::get('/patients/{id}/notifications',[PatientController::class,"showNotification"]);
+
 
 //Doctor Profile
 Route::get("/doctors/{id}", [DoctorController::class, "show"])->middleware('auth:doctor')->whereNumber('id');
@@ -46,7 +48,11 @@ Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "
 Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->middleware('auth:doctor')->whereNumber('id');
 Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->middleware('auth:doctor')->whereNumber('id');
 
-Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"]);
+Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"])->middleware('auth:doctor')->whereNumber('id');
+
+Route::patch("/doctors/{doctor_id}/reservations/{appointment_id}/{patient_id}/{time}", [ReservationController::class, "changeStatus"])->middleware('auth:doctor')->whereNumber('id');
+
+Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->middleware('auth:doctor')->whereNumber('id');
 
 
 Route::get("login",function(){

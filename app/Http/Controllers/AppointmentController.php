@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
+use App\Notifications\PatientNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use App\Models\Reservation;
+use Illuminate\Support\Facades\Notification;
 
 class AppointmentController extends Controller
 {
@@ -120,6 +123,11 @@ class AppointmentController extends Controller
 
     public function destroy($doctor_id, $appointment_id)
     {
+        $reservations = Reservation::where('appointment_id',$appointment_id)->get();
+        foreach($reservations as $oneReservation)
+        {
+            Notification::send($oneReservation->patient->user,new PatientNotification($oneReservation->appointment));
+        }
         Appointment::destroy($appointment_id);
 
         return "deleted";

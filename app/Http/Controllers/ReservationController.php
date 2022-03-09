@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
+use App\Models\Feedback;
 use App\Models\Reservation;
+use App\Models\User;
+use App\Notifications\FeedbackNptification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -120,5 +125,43 @@ class ReservationController extends Controller
         ->where('patient_time', '=', $time)
         ->delete();
         return "deleted";
+    }
+    public function indexPatients($id,$appointment_id)
+    {
+        //possible validation
+        $id = auth()->guard('doctor')->user()->id;
+        $appointment = Appointment::find($appointment_id);
+        if($appointment->doctor->user->id != $id)
+        {
+            return "Not Owned Appointment";
+        }
+        $reservations = Reservation::where('appointment_id',$appointment_id)->get();
+        $data = collect($reservations)->map(function($oneReservation){
+            return
+            [
+                'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->fname,
+                'patientTime' => $oneReservation->patient_time,
+                'status'=> $oneReservation->status
+            ];
+        });
+        return $data;
+    }
+    public function changeStatus($id,$appointment_id,$patient_id,$time)
+    {
+        $id = auth()->guard('doctor')->user()->id;
+        $appointment = Appointment::find($appointment_id);
+        if($appointment->doctor->user->id != $id)
+        {
+            return "Not Owned Appointment";
+        }
+
+        Reservation::where('patient_id','=',$patient_id)
+            ->where('appointment_id', '=', $appointment_id)
+            ->where('patient_time', '=', $time)
+            ->update(['status' => 'completed']);
+        $user = User::find($patient_id);
+        Notification::send($user,new FeedbackNptification($appointment));
+        return "done";
+
     }
 }
