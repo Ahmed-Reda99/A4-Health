@@ -81,4 +81,10 @@ class UserController extends Controller
         User::destroy($id);
         return "deleted";
     }
+
+    public function displayAllNotifications()
+    {
+        return auth()->user()->notifications;
+    }
+
 }

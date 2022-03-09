@@ -3,11 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AppointmentController;
 use App\Models\Admin;
 
 
@@ -101,3 +98,4 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 
 });
 
+Route::get("/notifications", [UserController::class, "displayAllNotifications"])->middleware('auth:user');

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use App\Notifications\ReservationAdded;
+use App\Notifications\ReservationCancelled;
 
 class ReservationController extends Controller
 {
@@ -32,20 +34,29 @@ class ReservationController extends Controller
         //possible validation
         try
         {
+            DB::beginTransaction();
+
             $this->validate($request, [
                 'patient_time' => Rule::unique('reservations')->where(function ($query){
                     global $request;
                     return $query->where('appointment_id','=',$request->appointment_id);
                 })
             ]);
+
             $newReservation = new Reservation;
             $newReservation->appointment_id = $request->appointment_id;
             $newReservation->patient_time = $request->patient_time;
             $newReservation->patient_id = $id;
             $newReservation->status = "pending";
             $newReservation->save();
+
+            DB::commit();
+
+            $newReservation->appointment->doctor->notify(new ReservationAdded($newReservation));
+            
         }catch(ValidationException $ex)
         {
+            DB::rollBack();
             return $ex->errors();
         }
         // return redirect("/patients/{$id}/reservations");
@@ -108,12 +119,15 @@ class ReservationController extends Controller
     
     public function destroy($id,$appointment_id,$time)
     {
-        //
+        $reservation = Reservation::where('patient_id','=',$id)
+        ->where('appointment_id', '=', $appointment_id)
+        ->where('patient_time', '=', $time)->first();
+
+        $reservation->appointment->doctor->notify(new ReservationCancelled($reservation));
         Reservation::where('patient_id','=',$id)
         ->where('appointment_id', '=', $appointment_id)
-        ->where('patient_time', '=', $time)
-        ->delete();
-        // return redirect("/patients/{$id}/reservations");
+        ->where('patient_time', '=', $time)->delete();
+
         return "deleted";
     }
 }
