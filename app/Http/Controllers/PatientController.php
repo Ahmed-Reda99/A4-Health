@@ -160,7 +160,7 @@ class PatientController extends Controller
     public function showNotification($id)
     {
         $id = auth()->guard('patient')->user()->id;
-        $user = User::find($id);
-        return $user->notifications;
+        $patient = Patient::find($id);
+        return $patient->notifications;
     }
 }

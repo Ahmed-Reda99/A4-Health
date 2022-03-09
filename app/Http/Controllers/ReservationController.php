@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Feedback;
+use App\Models\Patient;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Notifications\FeedbackNptification;
@@ -159,8 +160,8 @@ class ReservationController extends Controller
             ->where('appointment_id', '=', $appointment_id)
             ->where('patient_time', '=', $time)
             ->update(['status' => 'completed']);
-        $user = User::find($patient_id);
-        Notification::send($user,new FeedbackNptification($appointment));
+        $patient = Patient::find($patient_id);
+        Notification::send($patient,new FeedbackNptification($appointment));
         return "done";
 
     }

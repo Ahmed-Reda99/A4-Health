@@ -126,7 +126,7 @@ class AppointmentController extends Controller
         $reservations = Reservation::where('appointment_id',$appointment_id)->get();
         foreach($reservations as $oneReservation)
         {
-            Notification::send($oneReservation->patient->user,new PatientNotification($oneReservation->appointment));
+            Notification::send($oneReservation->patient,new PatientNotification($oneReservation->appointment));
         }
         Appointment::destroy($appointment_id);
 
