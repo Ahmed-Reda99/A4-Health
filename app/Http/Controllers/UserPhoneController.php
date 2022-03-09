@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User_phone;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserPhoneController extends Controller
 {
@@ -20,9 +21,14 @@ class UserPhoneController extends Controller
     }
 
     
-    public function store(Request $request)
+    public function store($phone, $user_id)
     {
-        //
+        
+        $userPhone = new User_phone;
+        $userPhone->user_id = $user_id;
+        $userPhone->phone = $phone;
+        $userPhone->save();
+        return "inserted";
     }
 
     

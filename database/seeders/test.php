@@ -24,7 +24,7 @@ class test extends Seeder
             'password' => Hash::make('password')
         ]);
         DB::table('specializations')->insert([
-            'name' => "Hart"
+            'name' => "Heart"
         ]);
         DB::table('doctors')->insert([
             'id' => 1,
@@ -52,6 +52,12 @@ class test extends Seeder
         DB::table('patients')->insert([
             'id' => 2
             
+        ]);
+        DB::table('feedback')->insert([
+            'patient_id'  =>  2,
+            'doctor_id'   =>  1,
+            'rate'        =>  4,
+            'message'     => 'good'
         ]);
     }
 }

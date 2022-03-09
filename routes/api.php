@@ -62,9 +62,6 @@ Route::post('/login', function (Request $request) {
     
 });
 
-// Route::get("/doctors", [DoctorController::class, "index"])->middleware('auth:patient');
-// Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->middleware('auth:doctor');
-
 /////////////////////////////////////////// Admin routes ///////////////////////////////////////////
 
 Route::post("/dashboard/login", function(Request $request){
@@ -81,19 +78,26 @@ Route::post("/dashboard/login", function(Request $request){
 });
 
 
-Route::get("/dashboard/doctors",[AdminController::class, "listAllDoctors"])->middleware('auth:admin');
-Route::post("/dashboard/doctors/store",[AdminController::class, "addNewDoctor"])->middleware('auth:admin');
-Route::delete("/dashboard/doctors/{doc_id}",[AdminController::class, "deleteDoctor"])->middleware('auth:admin');
+// mutliple routes that use the same controller and just mention the method name
 
-Route::get("/dashboard/specializations",[AdminController::class, "listAllSpecializations"])->middleware('auth:admin');
-Route::post("/dashboard/specializations/store",[AdminController::class, "addNewSpecialization"])->middleware('auth:admin');
-Route::delete("/dashboard/specializations/{specialization_id}",[AdminController::class, "deleteSpecialization"])->middleware('auth:admin');
+Route::controller(AdminController::class)->middleware('auth:admin')->group(function () {
+    
+    Route::put("/dashboard/updatePassword", "updateMyPassword");
 
-Route::get("/dashboard/patients",[AdminController::class, "listAllPatients"])->middleware('auth:admin');
-Route::delete("/dashboard/patients/{patient_id}",[AdminController::class, "deletePatient"])->middleware('auth:admin');
+    Route::get("/dashboard/doctors", "listAllDoctors");
+    Route::post("/dashboard/doctors", "addNewDoctor");
+    Route::delete("/dashboard/doctors/{doc_id}", "deleteDoctor");
 
-Route::get("/dashboard/reviews",[AdminController::class, "listAllReviews"])->middleware('auth:admin');
-Route::delete("/dashboard/reviews/{review_id}",[AdminController::class, "deleteReview"])->middleware('auth:admin');
+    Route::get("/dashboard/specializations", "listAllSpecializations");
+    Route::post("/dashboard/specializations", "addNewSpecialization");
+    Route::put("/dashboard/specializations/{specialization_id}", "updateSpecialization");
+    Route::delete("/dashboard/specializations/{specialization_id}", "deleteSpecialization");
 
-Route::put("/dashboard/updatePassword", [AdminController::class, "updatePassword"])->middleware('auth:admin');
+    Route::get("/dashboard/patients", "listAllPatients");
+    Route::delete("/dashboard/patients/{patient_id}", "deletePatient");
+
+    Route::get("/dashboard/reviews", "listAllReviews");
+    Route::delete("/dashboard/reviews/{review_id}", "deleteReview");
+
+});
 

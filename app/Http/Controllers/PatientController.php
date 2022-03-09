@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Patient;
-use App\Models\User;
-use App\Models\User_phone;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class PatientController extends Controller
 {
@@ -35,35 +34,35 @@ class PatientController extends Controller
 
         public function store(Request $request)
     {
-        //
-        try
-        {
-            $this->validate($request, [
-                'username' => 'required|unique:users|min:4',
-                'password' => 'required|min:8',
-                'fname' => 'required|min:4',
-                'lname' => 'required|min:4',
-            ]);
-            $user = new User;
-            $user->username = $request->username;
-            $user->password = Hash::make($request->password);
-            $user->fname = $request->fname;
-            $user->lname = $request->lname;
-            $user->gender = $request->gender;
-            $user->save();
-            $user_phone = new User_phone;
-            $user_phone->user_id = $user->id;
-            $user_phone->phone = $request->phone;
-            $user_phone->save();
+        
+        DB::beginTransaction();
+
+        $user = (new UserController)->store($request);
+        
+        
+        
+        try {
+            
             $patien = new Patient;
             $patien->id = $user->id;
             $patien->save();
-        }catch(ValidationException $ex)
-        {
+
+            $request->validate([
+                "phone"  =>  "digits:11"
+            ]);
+            (new UserPhoneController)->store($request->phone,$user->id);
+
+            DB::commit();
+            return "inserted";
+
+        } catch (ValidationException $ex) {
+            DB::rollBack();
             return $ex->errors();
+        } catch(Throwable $th){
+            DB::rollBack();
+            return $user;
         }
         
-        return "inserted";
     }
 
     
@@ -89,37 +88,32 @@ class PatientController extends Controller
     }
 
     
-    public function update(Request $request, $id)
-    {
-        //
-        try
-        {
-            $this->validate($request, [
-                'password' => 'required|min:8',
-                'fname' => 'required|min:4',
-                'lname' => 'required|min:4'
-            ]);
-            $user = User::find($id);
-            $user->password = Hash::make($request->password);
-            $user->fname = $request->fname;
-            $user->lname = $request->lname;
-            $user->save();
-        }catch(ValidationException $ex)
-        {
-            return $ex->errors();
-        }
-        return "updated";
+    // public function update(Request $request, $id)
+    // {
+    //     //
+    //     try
+    //     {
+    //         $this->validate($request, [
+    //             'password' => 'required|min:8',
+    //             'fname' => 'required|min:4',
+    //             'lname' => 'required|min:4'
+    //         ]);
+    //         $user = User::find($id);
+    //         $user->password = Hash::make($request->password);
+    //         $user->fname = $request->fname;
+    //         $user->lname = $request->lname;
+    //         $user->save();
+    //     }catch(ValidationException $ex)
+    //     {
+    //         return $ex->errors();
+    //     }
+    //     return "updated";
 
-    }
+    // }
 
     
     public function destroy($id)
     {
-        //
-        Patient::find($id)->delete();
-        User::find($id)->delete();
-        // return redirect('/patients');
-        return "deleted";
-        
+        return (new UserController)->destroy($id);
     }
 }

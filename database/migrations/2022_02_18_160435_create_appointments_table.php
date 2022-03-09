@@ -21,7 +21,7 @@ class CreateAppointmentsTable extends Migration
             $table->integer('examination_time');
             $table->unsignedBigInteger('doctor_id');
             $table->unique(['doctor_id', 'date','start_time']);
-            $table->foreign('doctor_id')->references('id')->on('doctors');
+            $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
         });
     }
 

@@ -22,8 +22,8 @@ class CreateDoctorsTable extends Migration
             $table->string('city');
             $table->unsignedBigInteger('specialization_id');
             $table->integer('fees');
-            $table->foreign('id')->references('id')->on('users');
-            $table->foreign('specialization_id')->references('id')->on('specializations');
+            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade');
         });
     }
 

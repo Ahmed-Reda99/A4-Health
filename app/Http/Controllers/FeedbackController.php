@@ -40,6 +40,7 @@ class FeedbackController extends Controller
             $feedback->rate = $request->rate;
             $feedback->message = $request->message;
             $feedback->save();
+            return "inserted";
            
         } catch (ValidationException $e) {
             return $e->errors();
@@ -66,8 +67,9 @@ class FeedbackController extends Controller
     }
 
     
-    public function destroy(Feedback $feedback)
+    public function destroy($feedback_id)
     {
-        //
+        Feedback::destroy($feedback_id);
+        return "deleted";
     }
 }

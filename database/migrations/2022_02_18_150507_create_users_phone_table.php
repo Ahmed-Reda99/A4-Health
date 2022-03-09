@@ -16,7 +16,7 @@ class CreateUsersPhoneTable extends Migration
         Schema::create('user_phones', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->string('phone');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
