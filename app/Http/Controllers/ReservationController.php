@@ -29,7 +29,8 @@ class ReservationController extends Controller
                 'patient_time' => $oneReservation->patient_time,
                 'doctorName' => $oneReservation->appointment->doctor->user->fname." ".$oneReservation->appointment->doctor->user->lname,
                 'date' => $oneReservation->appointment->date,
-                'status' => $oneReservation->status
+                'status' => $oneReservation->status,
+                'payment_status' => $oneReservation->payment_status
             ];
         });
         return $reservations;
@@ -61,6 +62,7 @@ class ReservationController extends Controller
             $newReservation->patient_time = $request->patient_time;
             $newReservation->patient_id = $id;
             $newReservation->status = "pending";
+            $newReservation->payment_status = "pending";
             $newReservation->save();
         }catch(ValidationException $ex)
         {

@@ -5,28 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reservation extends Model
+class Invoice extends Model
 {
     use HasFactory;
     public $timestamps = false;
     protected $fillable = [
-        'appointment_id',
-        'patient_time',
+        'invoiceID',
         'patient_id',
-        'status',
-        'payment_status'
+        'reservation_id'
     ];
-    public function appointment()
-    {
-        return $this->belongsTo(Appointment::class);
-    }
+    protected $primaryKey = 'invoiceID';
     public function patient()
     {
         return $this->belongsTo(Patient::class);
     }
-    public function invoices()
+    public function reservation()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->belongsTo(Reservation::class);
     }
-
+    
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -36,7 +37,9 @@ Route::patch('/patients/{id}/password',[PatientController::class,"updatePassword
 Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
 Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
 
-Route::get('/patients/{id}/notifications',[PatientController::class,"showNotification"]);
+
+
+Route::get('/patients/{id}/notifications',[PatientController::class,"showNotification"])->middleware('auth:patient')->whereNumber('id');
 
 
 //Doctor Profile
@@ -54,7 +57,10 @@ Route::patch("/doctors/{doctor_id}/reservations/{appointment_id}/{patient_id}/{t
 
 Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->middleware('auth:doctor')->whereNumber('id');
 
+//payment Route
 
+Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
+Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeStatus"]);
 Route::get("login",function(){
     return "you must login";
 })->name('login');
