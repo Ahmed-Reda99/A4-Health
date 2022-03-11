@@ -19,7 +19,7 @@ class CreateOffersTable extends Migration
             $table->string('name');
             $table->float('discount');
             $table->unique(['doctor_id', 'name']);
-            $table->foreign('doctor_id')->references('id')->on('doctors');
+            $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
         });
     }
 

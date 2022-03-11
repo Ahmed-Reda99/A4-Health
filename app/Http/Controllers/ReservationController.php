@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use App\Notifications\ReservationAdded;
+use App\Notifications\ReservationCancelled;
 
 class ReservationController extends Controller
 {
@@ -49,6 +51,8 @@ class ReservationController extends Controller
         //possible validation
         try
         {
+            DB::beginTransaction();
+
             $this->validate($request, [
                 'appointment_id' => 'required',
                 'patient_time' => Rule::unique('reservations')->where(function ($query){
@@ -56,6 +60,7 @@ class ReservationController extends Controller
                     return $query->where('appointment_id','=',$request->appointment_id);
                 })
             ]);
+
             $id = auth()->guard('patient')->user()->id;
             $newReservation = new Reservation;
             $newReservation->appointment_id = $request->appointment_id;
@@ -64,8 +69,14 @@ class ReservationController extends Controller
             $newReservation->status = "pending";
             $newReservation->payment_status = "pending";
             $newReservation->save();
+
+            DB::commit();
+
+            $newReservation->appointment->doctor->notify(new ReservationAdded($newReservation));
+            
         }catch(ValidationException $ex)
         {
+            DB::rollBack();
             return $ex->errors();
         }
         return "done";
@@ -121,12 +132,17 @@ class ReservationController extends Controller
     
     public function destroy($id,$appointment_id,$time)
     {
-        //
         $id = auth()->guard('patient')->user()->id;
+
+        $reservation = Reservation::where('patient_id','=',$id)
+        ->where('appointment_id', '=', $appointment_id)
+        ->where('patient_time', '=', $time)->first();
+
+        $reservation->appointment->doctor->notify(new ReservationCancelled($reservation));
         Reservation::where('patient_id','=',$id)
         ->where('appointment_id', '=', $appointment_id)
-        ->where('patient_time', '=', $time)
-        ->delete();
+        ->where('patient_time', '=', $time)->delete();
+
         return "deleted";
     }
     public function indexPatients($id,$appointment_id)

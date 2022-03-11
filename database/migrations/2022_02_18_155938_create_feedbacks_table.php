@@ -14,12 +14,13 @@ class CreateFeedbacksTable extends Migration
     public function up()
     {
         Schema::create('feedback', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('doctor_id');
             $table->enum('rate' , [1,2,3,4,5]);
             $table->text('message');
-            $table->foreign('patient_id')->references('id')->on('patients');
-            $table->foreign('doctor_id')->references('id')->on('doctors');
+            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+            $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
         });
     }
 

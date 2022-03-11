@@ -7,14 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User_phone;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class DoctorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     { 
         // return auth()->user()->user->username;
@@ -56,81 +55,61 @@ class DoctorController extends Controller
         // ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
         //return view(doctors.create);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
+    
     public function store(Request $request)
-    {
-
-        
+    {   
         try {
-            
-            $request->validate([
-                "username"=>"required|min:4|unique:users",
-                "password"=>"required|min:8",
-                'fname' => 'required|min:4',
-                'lname' => 'required|min:4',
-            ],
-            [
-                "username.required"=>"hold on ma boi username is required",
-                "username.min"=>"username must be more than 5 charachters",
-                // "username.unique"=>"username already exists"
-            ]);
 
-            
-
-            // instead of repeating the validation in store and update make a func in the user model
-            
             DB::beginTransaction();
-
-            $user = new User;
-            $user->username = $request->username;
-            $user->password = Hash::make($request->password);
-            $user->fname = $request->fname;
-            $user->lname = $request->lname;
-            $user->gender = $request->gender;
-            $user->save();
-
-            $userPhone = new User_phone;
-            $userPhone->user_id = $user->id;
-            $userPhone->phone = $request->phone;
-            $userPhone->save();
+    
+            $user = (new UserController)->store($request);
+            
             
             $doctor = new Doctor;
             $doctor->id = $user->id;
+            
+            
+            
+            $request->validate([
+                "phone"               =>   'digits:11',
+                'description'         =>   'bail|string|min:15|max:50',
+                // 'img_name'            =>   'bail|image|mimes:jpeg,pmb,png,jpg|max:88453',
+                'street'              =>   'bail|string|min:3|max:20',
+                'city'                =>   'bail|required|string|min:4|max:15',
+                'specialization_id'   =>   'bail|required',
+                'fees'                =>   'bail|numeric|min:1',
+                'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
+            ]);
+
+            (new UserPhoneController)->store($request->phone,$user->id);
+            
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
-            $doctor->specialization_id = 1 ;
+            $doctor->specialization_id = $request->specialization_id ;
             $doctor->fees = $request->fees;
             $doctor->save();
-
+    
             DB::commit();
+            return "inserted";
 
-        } catch (ValidationException $e) {
+        } catch(ValidationException $ex) {
             DB::rollBack();
-            return $e->errors();
-        }
-        
-        return "inserted";
-
+            return $ex->errors();
+        } catch(Throwable $th){
+            DB::rollBack();
+            return $user;
+        } 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     */
+    
     public function show($id)
     {
         if(auth()->guard('doctor')->user())
@@ -157,21 +136,13 @@ class DoctorController extends Controller
         return $data;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     */
+    
     public function edit($id)
     {
         //return view(doctors.edit);
     }
 
-    /**;l
-     * Update the specified -=+
-     *  in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
+    
     public function update(Request $request, $id)
     {
         try {
@@ -218,15 +189,9 @@ class DoctorController extends Controller
         return "updated";
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     */
+    
     public function destroy($id)
     {
-        Doctor::destroy($id);
-        User::destroy($id);
-
-        return "deleted";
+        return (new UserController)->destroy($id);
     }
 }

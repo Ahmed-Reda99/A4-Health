@@ -34,22 +34,24 @@ class AppointmentController extends Controller
     {
                 
         try {
+
             $doctor_id = auth()->guard('doctor')->user()->id;
+
+            $request->validate([
+                "date"=>"bail|required|date_format:Y-m-d",
+                "start_time"=>Rule::unique('appointments')->where(function ($query){
+                global $request;
+                return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
+            })]);
+
             $request->validate([
                 "start_time"=>"bail|required|date_format:H:i",
-                "date"=>"bail|required|date_format:Y-m-d",
                 "patient_limit"=>"bail|numeric",
                 "examination_time"=>"bail|required|numeric",
-                "start_time"=>Rule::unique('appointments')->where(function ($query){
-                    global $request;
-                    return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
-                })
+                
             ]);
             $appoint = new Appointment;
             $appoint->start_time = $request->start_time;
-            //yyyy:mm:dd need to change timezone can be found in config/app.php
-            // $appoint->date = Carbon::now()->toDateString(); 
-            // $appoint->date = date("Y-m-d");
             $appoint->date = $request->date;
             $appoint->patient_limit = $request->patient_limit;
             $appoint->examination_time = $request->examination_time;
