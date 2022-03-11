@@ -21,7 +21,38 @@ class DoctorController extends Controller
         // auth()->guard('doctor')->id();
         // auth()->guard('doctor')->user()->username;
         // return Doctor::paginate(1);
-        return Doctor::all();
+        // $doctorsInformation = Doctor::all();
+        $doctorsInformation = Doctor::all();
+        $data = collect($doctorsInformation)->map(function($doctor)
+        { 
+            $ratings = array();
+            foreach($doctor->feedbacks as $rating)
+            {
+               array_push($ratings,$rating->rate);
+            }
+            $average = array_sum($ratings) / count($ratings);
+            return 
+            [
+                'id' => $doctor->id,
+                'fname' => $doctor->user->fname,
+                'lname' => $doctor->user->lname,
+                'title' => $doctor->title,
+                'specialization' => $doctor->specialization->name,
+                'fees' => $doctor->fees,
+                'rating' => $average,
+                'city' => $doctor->city,
+                'street' => $doctor->street,
+                'gender' => $doctor->user->gender,
+                'img_name' => $doctor->img_name,
+                'appointment' => $doctor->appointments
+            ];
+        });    
+        return $data;
+        // [
+        //     'data' => $data,
+        //     'next' => $PaginatedData->nextPageUrl(),
+        //     'previous' => $PaginatedData->previousPageUrl(),
+        // ];
     }
 
     
@@ -81,21 +112,28 @@ class DoctorController extends Controller
     
     public function show($id)
     {
-        $user = User::find($id);
-        
-        $doctor = [
-            'fname'=>$user->fname,
-            'lname'=>$user->lname,
-            'gender'=>$user->gender,
-            'description'=>$user->doctor->description,
-            'img_name'=>$user->doctor->img_name,
-            'street'=>$user->doctor->street,
-            'city'=>$user->doctor->city,
-            'specialization'=>$user->doctor->specialization->name,
-            'fees'=>$user->doctor->fees,
-            'phone'=>$user->phones
+        if(auth()->guard('doctor')->user())
+        {
+            $id = auth()->guard('doctor')->user()->id;
+        }
+        $doctor = Doctor::find($id);
+        $data = [
+            'username'=>$doctor->user->username,
+            'fname'=>$doctor->user->fname,
+            'lname'=>$doctor->user->lname,
+            'gender'=>$doctor->user->gender,
+            'description'=>$doctor->description,
+            'img_name'=>$doctor->img_name,
+            'street'=>$doctor->street,
+            'city'=>$doctor->city,
+            'specialization'=>$doctor->specialization->name,
+            'title' => $doctor->title,
+            'fees'=>$doctor->fees,
+            'phone'=>$doctor->user->phones,
+            'appointment' => $doctor->appointments
+
         ];
-        return $doctor;
+        return $data;
     }
 
     
@@ -107,42 +145,38 @@ class DoctorController extends Controller
     
     public function update(Request $request, $id)
     {
-        
-        
         try {
-            
+            $id = auth()->guard('doctor')->user()->id;
             $request->validate([
-                "username"=>"bail|required|min:5|unique:users",
-                "password"=>"bail|required|min:8"
-            ],
-            [
-                "username.required"=>"hold on ma boi username is required",
-                "username.min"=>"username must be more than 5 charachters",
-                // "username.unique"=>"username already exists"
+                "fname" => "bail|required",
+                "lname" => "bail|required",
+                "img_name" => "bail|required",
+                "description" => "bail|required",
+                "street" => "bail|required",
+                "city" => "bail|required",
+                "fees" => "bail|required",
+                'phone' => 'required'
             ]);
             
             
             DB::beginTransaction();
-
-            
             $user = User::find($id);
-    
-            $user->password = Hash::make($request->password);
+            // !!!!!
             $user->fname = $request->fname;
             $user->lname = $request->lname;
-            $user->gender = $request->gender;
             $user->save();
-    
             $doctor = $user->doctor;
-    
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
-            $doctor->specialization_id = 1 ;
             $doctor->fees = $request->fees;
+            foreach($request->phone as $onePhone)
+            {
+                dd($id,$onePhone);
+                User_phone::insertOrIgnore(['user_id'=>$id,'phone'=>$onePhone]);
+            }
             $doctor->save();
-            
 
             DB::commit();
 

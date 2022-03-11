@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Notifications\Notifiable;
 class Patient extends Model
 {
-    use HasFactory,HasApiTokens;
+    use HasFactory,HasApiTokens,Notifiable;
     public $timestamps = false;
     protected $fillable = [
         'id',
@@ -24,5 +24,9 @@ class Patient extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }
