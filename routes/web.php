@@ -9,6 +9,8 @@ use App\Http\Controllers\DoctorController;
 use App\Models\Doctor;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\SocialController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,3 +105,7 @@ Route::fallback(function () {
     // return view("404");
     return view("404-2");
 });
+
+Route::get("redirect/facebook", [SocialController::class, "redirect"]);
+
+Route::get("callback/facebook", [SocialController::class, "callback"]);

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SocialController;
 use App\Models\Admin;
 
 
@@ -99,3 +100,7 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 });
 
 Route::get("/notifications", [UserController::class, "displayAllNotifications"])->middleware('auth:user');
+
+Route::get("redirect/facebook", [SocialController::class, "redirect"]);
+
+Route::get("callback/facebook", [SocialController::class, "callback"]);
