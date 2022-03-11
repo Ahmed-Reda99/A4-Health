@@ -78,10 +78,14 @@
             myFatoorah.submit()
             // On success
             .then(function (response) {
+              fetch(`http://127.0.0.1:8000/patients/1/reservations/1/pay/now/${sessionID}`)
+            .then(response => response.json())
+            .then(data => console.log(data));
             // Here you need to pass session id to you backend here
             var sessionId = response.SessionId;
             var cardBrand = response.CardBrand;
             
+            })
             // In case of errors
             .catch(function (error) {
                 console.log(error);

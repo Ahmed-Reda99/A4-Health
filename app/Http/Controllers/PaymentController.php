@@ -53,6 +53,10 @@ class PaymentController extends Controller
         // $invoice->save();
         return $paymentLink;
     }
+    function executePaymentgetway()
+    {
+        return "hi";
+    }
     function InitiateSession($apiURL, $apiKey, $postFields) {
 
         $json = $this->callAPI("$apiURL/v2/InitiateSession", $apiKey, $postFields);

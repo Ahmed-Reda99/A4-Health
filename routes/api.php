@@ -60,7 +60,8 @@ Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"]
 //payment Route
 
 Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
-Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeStatus"]);
+Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"]);
+// Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeStatus"]);
 Route::get("login",function(){
     return "you must login";
 })->name('login');
@@ -70,11 +71,11 @@ Route::get("login",function(){
 
 
 Route::post('/login', function (Request $request) { 
-    // $request->validate([
-    //     'email' => 'required|email',
-    //     'password' => 'required',
-    //     'device_name' => 'required',
-    // ]);
+    $request->validate([
+        'username' => 'required',
+        'password' => 'required',
+        'device_name' => 'required'
+    ]);
     $user = User::where('username', $request->username)->first();
  
     if (! $user || ! Hash::check($request->password, $user->password)) {
