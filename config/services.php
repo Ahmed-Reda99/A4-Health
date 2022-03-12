@@ -36,5 +36,9 @@ return [
         'redirect' => env ( 'FB_REDIRECT' )
     ],
 
+    'nexmo' => [
+        'sms_from' => 'A4-Health',
+    ],
+
 
 ];

@@ -45,9 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function phones()
+    public function phone()
     {
-        return $this->hasMany(User_phone::class);
+        return $this->hasOne(User_phone::class);
     }
 
     public function patient()
@@ -57,6 +57,12 @@ class User extends Authenticatable
     public function doctor()
     {
         return $this->hasOne(Doctor::class,'id');
+    }
+
+    public function routeNotificationForNexmo($notification)
+    {
+        return $this->phone->phone;
+        // return '201284145862';
     }
 
 }

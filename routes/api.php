@@ -13,6 +13,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,20 @@ Route::get("unauthenticated",function(){
     return ['message'=>"unauthenticated"];
 })->name('unauthenticated');
 
+
+// route for logging out
+
+Route::middleware('auth:sanctum')->get('/logout', function(){
+    
+    auth()->user()->currentAccessToken()->delete();
+    return "Logged Out Successfully";
+    
+});
+
+Route::get("/notifications", [UserController::class, "displayAllNotifications"])->middleware('auth:user');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
 //Search Page
 Route::get("/doctors", [DoctorController::class, "index"]);
 Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
@@ -73,16 +88,6 @@ Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeSt
 Route::get("login",function(){
     return "you must login";
 })->name('login');
-
-// route for logging out
-
-Route::middleware('auth:sanctum')->get('/logout', function(){
-    
-    auth()->user()->currentAccessToken()->delete();
-    return "Logged Out Successfully";
-
-});
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,8 +158,14 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 
 });
 
-Route::get("/notifications", [UserController::class, "displayAllNotifications"])->middleware('auth:user');
+
+//////////////////////////////////////////////////////////////
 
 Route::get("redirect/facebook", [SocialController::class, "redirect"]);
 
 Route::get("callback/facebook", [SocialController::class, "callback"]);
+
+//////////////////////////////////////////////////////////////
+
+Route::post("/verify",[UserController::class, "verifyPhone"]);
+Route::delete("/deleteUnverifiedUser/{id}", [UserController::class, "destroy"])->where('id', '[0-9]+');

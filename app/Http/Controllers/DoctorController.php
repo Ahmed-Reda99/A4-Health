@@ -75,9 +75,7 @@ class DoctorController extends Controller
             $doctor->id = $user->id;
             
             
-            
             $request->validate([
-                "phone"               =>   'digits:11',
                 'description'         =>   'bail|string|min:15|max:50',
                 // 'img_name'            =>   'bail|image|mimes:jpeg,pmb,png,jpg|max:88453',
                 'street'              =>   'bail|string|min:3|max:20',
@@ -87,7 +85,6 @@ class DoctorController extends Controller
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
 
-            (new UserPhoneController)->store($request->phone,$user->id);
             
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;

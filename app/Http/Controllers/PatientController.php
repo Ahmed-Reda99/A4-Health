@@ -49,14 +49,10 @@ class PatientController extends Controller
             $patien = new Patient;
             $patien->id = $user->id;
             $patien->save();
-
-            $request->validate([
-                "phone"  =>  "digits:11"
-            ]);
-            (new UserPhoneController)->store($request->phone,$user->id);
+            $patien = Patient::find($user->id);
 
             DB::commit();
-            return "inserted";
+            return $patien->user;
 
         } catch (ValidationException $ex) {
             DB::rollBack();
