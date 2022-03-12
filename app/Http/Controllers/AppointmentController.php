@@ -68,6 +68,7 @@ class AppointmentController extends Controller
     
     public function show($doctor_id, $appointment_id)
     {
+        //check if appointment belongs to this doctor id
         $appoint = Appointment::find($appointment_id);
         return ["date"=>$appoint->date,
                 "start_time"=>$appoint->start_time,
@@ -86,7 +87,7 @@ class AppointmentController extends Controller
 
     public function update(Request $request, $doctor_id, $appointment_id)
     {
-        
+        //check if appointment belongs to this doctor id
         
         try {
             $doctor_id = auth()->guard('doctor')->user()->id;
@@ -125,6 +126,8 @@ class AppointmentController extends Controller
 
     public function destroy($doctor_id, $appointment_id)
     {
+        //check if appointment belongs to this doctor id
+        $doctor_id = auth()->guard('doctor')->user()->id;
         $reservations = Reservation::where('appointment_id',$appointment_id)->get();
         foreach($reservations as $oneReservation)
         {

@@ -15,13 +15,7 @@ class DoctorController extends Controller
 {
     
     public function index()
-    { 
-        // return auth()->user()->user->username;
-        // auth('doctor')
-        // auth()->guard('doctor')->id();
-        // auth()->guard('doctor')->user()->username;
-        // return Doctor::paginate(1);
-        // $doctorsInformation = Doctor::all();
+    {
         $doctorsInformation = Doctor::all();
         $data = collect($doctorsInformation)->map(function($doctor)
         { 
@@ -48,17 +42,6 @@ class DoctorController extends Controller
             ];
         });    
         return $data;
-        // [
-        //     'data' => $data,
-        //     'next' => $PaginatedData->nextPageUrl(),
-        //     'previous' => $PaginatedData->previousPageUrl(),
-        // ];
-    }
-
-    
-    public function create()
-    {
-        //return view(doctors.create);
     }
 
     
@@ -86,9 +69,6 @@ class DoctorController extends Controller
                 'fees'                =>   'bail|numeric|min:1',
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
-
-            (new UserPhoneController)->store($request->phone,$user->id);
-            
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
@@ -129,64 +109,42 @@ class DoctorController extends Controller
             'specialization'=>$doctor->specialization->name,
             'title' => $doctor->title,
             'fees'=>$doctor->fees,
-            'phone'=>$doctor->user->phones,
+            'phone'=>$doctor->user->phone,
             'appointment' => $doctor->appointments
 
         ];
         return $data;
-    }
-
-    
-    public function edit($id)
-    {
-        //return view(doctors.edit);
-    }
-
-    
+    }    
     public function update(Request $request, $id)
     {
         try {
+            DB::beginTransaction();
             $id = auth()->guard('doctor')->user()->id;
+            $user = (new UserController)->update($request,$id);
             $request->validate([
-                "fname" => "bail|required",
-                "lname" => "bail|required",
                 "img_name" => "bail|required",
                 "description" => "bail|required",
                 "street" => "bail|required",
                 "city" => "bail|required",
-                "fees" => "bail|required",
-                'phone' => 'required'
+                "fees" => "bail|required"
             ]);
-            
-            
-            DB::beginTransaction();
-            $user = User::find($id);
-            // !!!!!
-            $user->fname = $request->fname;
-            $user->lname = $request->lname;
-            $user->save();
             $doctor = $user->doctor;
             $doctor->description = $request->description;
             $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
             $doctor->fees = $request->fees;
-            foreach($request->phone as $onePhone)
-            {
-                dd($id,$onePhone);
-                User_phone::insertOrIgnore(['user_id'=>$id,'phone'=>$onePhone]);
-            }
             $doctor->save();
-
             DB::commit();
-
+            return "updated";
         } catch (ValidationException $e) {
             DB::rollBack();
             return $e->errors();
+        } catch(Throwable $th){
+            DB::rollBack();
+            return $th;
         }
-
-
-        return "updated";
+        
     }
 
     

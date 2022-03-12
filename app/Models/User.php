@@ -23,6 +23,7 @@ class User extends Authenticatable
         'lname',
         'gender',
         'password',
+        'phone'
     ];
 
     /**
@@ -44,12 +45,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function phones()
-    {
-        return $this->hasMany(User_phone::class);
-    }
-
     public function patient()
     {
         return $this->hasOne(Patient::class,'id');
