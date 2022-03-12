@@ -27,6 +27,7 @@ class ReservationController extends Controller
         {
             return
             [
+                'id' =>$oneReservation->id,
                 'appointment_id' =>$oneReservation->appointment_id,
                 'patient_time' => $oneReservation->patient_time,
                 'doctorName' => $oneReservation->appointment->doctor->user->fname." ".$oneReservation->appointment->doctor->user->lname,
@@ -36,16 +37,7 @@ class ReservationController extends Controller
             ];
         });
         return $reservations;
-    }
-
-    
-    public function create($id)
-    {
-        //
-        // return view("reservations.store",["id"=>$id]);
-    }
-
-    
+    }    
     public function store($id,Request $request)
     {
         //possible validation
@@ -91,6 +83,7 @@ class ReservationController extends Controller
         ->where('appointment_id', '=', $appointment_id)
         ->where('patient_time', '=', $time)->first();
         $reservationData = [
+            'id' =>$reservation->id,
             'patientName'=>$reservation->patient->user->fname,
             'doctorName'=>$reservation->appointment->doctor->user->fname,
             'date'=>$reservation->appointment->date,
@@ -99,13 +92,6 @@ class ReservationController extends Controller
         // return view("patients.show",["user"=>$patient]);
         return $reservationData;
     }
-
-    
-    public function edit(Reservation $reservation)
-    {
-        //
-    }
-
     
     public function update(Request $request, $id,$appointment_id,$time)
     {
@@ -130,19 +116,22 @@ class ReservationController extends Controller
     }
 
     
-    public function destroy($id,$appointment_id,$time)
+    public function destroy($patient_id,$id)
     {
-        $id = auth()->guard('patient')->user()->id;
+        //edit re_id
+        $patient_id = auth()->guard('patient')->user()->id;
 
-        $reservation = Reservation::where('patient_id','=',$id)
-        ->where('appointment_id', '=', $appointment_id)
-        ->where('patient_time', '=', $time)->first();
-
+        $reservation = Reservation::find($id);
+        if($reservation == "")
+        {
+            return "Not reservation ID";
+        }
+        if($reservation->patient->user->id != $patient_id)
+        {
+            return "Not yours reservation";
+        }
         $reservation->appointment->doctor->notify(new ReservationCancelled($reservation));
-        Reservation::where('patient_id','=',$id)
-        ->where('appointment_id', '=', $appointment_id)
-        ->where('patient_time', '=', $time)->delete();
-
+        Reservation::destroy($id);
         return "deleted";
     }
     public function indexPatients($id,$appointment_id)
@@ -158,28 +147,26 @@ class ReservationController extends Controller
         $data = collect($reservations)->map(function($oneReservation){
             return
             [
-                'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->fname,
+                'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->lname,
                 'patientTime' => $oneReservation->patient_time,
-                'status'=> $oneReservation->status
+                'status'=> $oneReservation->status,
+                'payment_status' => $oneReservation->payment_status
             ];
         });
         return $data;
     }
-    public function changeStatus($id,$appointment_id,$patient_id,$time)
+    public function changeStatus($id,$reservation_id)
     {
-        $id = auth()->guard('doctor')->user()->id;
-        $appointment = Appointment::find($appointment_id);
-        if($appointment->doctor->user->id != $id)
+        $doctor_id = auth()->guard('doctor')->user()->id;
+        $reservation = Reservation::find($id);
+        if($reservation->appointment->doctor->user->id != $doctor_id)
         {
             return "Not Owned Appointment";
         }
-
-        Reservation::where('patient_id','=',$patient_id)
-            ->where('appointment_id', '=', $appointment_id)
-            ->where('patient_time', '=', $time)
-            ->update(['status' => 'completed']);
-        $patient = Patient::find($patient_id);
-        Notification::send($patient,new FeedbackNptification($appointment));
+        $reservation->status = 'completed';
+        $reservation->save();
+        $patient = Patient::find($reservation->patient);
+        Notification::send($patient,new FeedbackNptification($reservation->appointment));
         return "done";
 
     }

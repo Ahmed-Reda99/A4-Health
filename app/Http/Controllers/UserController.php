@@ -49,12 +49,14 @@ class UserController extends Controller
             $user->fname = $request->fname;
             $user->lname = $request->lname;
             $user->gender = $request->gender;
+            $user->phone = $request->phone;
             $user->save();
-            (new UserPhoneController)->store('2'.$request->phone,$user->id);
+            $user->phone = '2'.$request->phone;
             return $user;
             
         }catch(ValidationException $ex)
         {
+            //throw
             return $ex->errors();
         }
 
@@ -70,15 +72,29 @@ class UserController extends Controller
     }
 
     
-    public function edit($id)
-    {
-        //
-    }
-
-    
     public function update(Request $request, $id)
     {
         //
+        try
+        {
+            $this->validate($request,[
+                'fname' => 'required|min:4',
+                'lname' => 'required|min:4',
+                'phone' => 'required',
+            ]);
+            $user = User::find($id);
+            $user->fname = $request->fname;
+            $user->lname = $request->lname;
+            $user->phone = $request->phone;
+            $user->save();
+            return $user;
+
+        }catch(ValidationException $ex)
+        {
+            throw $ex;
+            //return $ex;
+        }
+
     }
 
    
@@ -117,5 +133,28 @@ class UserController extends Controller
         return $randomString;
     }
 
+
+    function updatePassword(Request $request,$id)
+    {
+        try
+        {
+            $id = auth()->user()->id;
+            $this->validate($request,[
+                'old_password' => 'required',
+                'password' => 'required|confirmed',
+            ]);
+            $user = User::find($id);
+            if (! Hash::check($request->old_password, $user->password)) {
+        
+                return ["error"=>"password is incorrect"];
+            }
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }catch(ValidationException $ex)
+        {
+            return $ex->errors();
+        }
+        return "updated";
+    }
 
 }

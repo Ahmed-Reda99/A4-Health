@@ -30,6 +30,7 @@ use App\Http\Controllers\UserController;
 
 // this is the msg to return if the user is unauthenticated
 
+// any error gets here !
 Route::get("unauthenticated",function(){
     return ['message'=>"unauthenticated"];
 })->name('unauthenticated');
@@ -44,80 +45,93 @@ Route::middleware('auth:sanctum')->get('/logout', function(){
     
 });
 
-Route::get("/notifications", [UserController::class, "displayAllNotifications"])->middleware('auth:user');
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//Search Page
-Route::get("/doctors", [DoctorController::class, "index"]);
-Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->middleware('auth:patient')->whereNumber('id');
-Route::get("/doctors/{id}/info", [DoctorController::class, "show"])->whereNumber('id');
-Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);
-
-//Patient Profile
-Route::get('/patients/{id}',[PatientController::class,"show"])->middleware('auth:patient')->whereNumber('id');
-Route::patch('/patients/{id}',[PatientController::class,"update"])->middleware('auth:patient')->whereNumber('id');
-Route::patch('/patients/{id}/password',[PatientController::class,"updatePassword"])->middleware('auth:patient')->whereNumber('id');
-Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->middleware('auth:patient')->whereNumber('id');
-Route::delete('/patients/{id}/reservations/{appointment_id}/{time}',[ReservationController::class,"destroy"]);
-
-
-
-Route::get('/patients/{id}/notifications',[PatientController::class,"showNotification"])->middleware('auth:patient')->whereNumber('id');
-
-
-//Doctor Profile
-Route::get("/doctors/{id}", [DoctorController::class, "show"])->middleware('auth:doctor')->whereNumber('id');
-Route::put("/doctors/{id}", [DoctorController::class, "update"])->middleware('auth:doctor')->whereNumber('id');
-
-Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"])->middleware('auth:doctor')->whereNumber('id');
-Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->middleware('auth:doctor')->whereNumber('id');
-Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->middleware('auth:doctor')->whereNumber('id');
-Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->middleware('auth:doctor')->whereNumber('id');
-
-Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"])->middleware('auth:doctor')->whereNumber('id');
-
-Route::patch("/doctors/{doctor_id}/reservations/{appointment_id}/{patient_id}/{time}", [ReservationController::class, "changeStatus"])->middleware('auth:doctor')->whereNumber('id');
-
-Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->middleware('auth:doctor')->whereNumber('id');
-
-//payment Route
-
-Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
-Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeStatus"]);
-Route::get("login",function(){
-    return "you must login";
-})->name('login');
+Route::get('/token', function () {
+    return csrf_token(); //X-CSRF-TOKEN
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // route for patient and doctor login
 
 Route::post('/login', function (Request $request) { 
-   
-    // $request->validate([
-    //     'email' => 'required|email',
-    //     'password' => 'required',
-    //     'device_name' => 'required',
-    // ]);
-    $user = User::where('username', $request->username)->first();
- 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        
-        return ["error"=>"username or password is incorrect"];
-    }
-    $userType = $user->doctor? "doctor" : "patient";
-    
-    if($userType == "patient")
-    {
-        return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken];
-    }else
-    {
-        return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken];
-    }
-    
-    
+
+    // Catch Excation is required
+     $request->validate([
+         'username' => 'required',
+         'password' => 'required',
+         'device_name' => 'required'
+     ]);
+     $user = User::where('username', $request->username)->first();
+  
+     if (! $user || ! Hash::check($request->password, $user->password)) {
+         
+         return ["error"=>"username or password is incorrect"];
+     }
+     $userType = $user->doctor? "doctor" : "patient";
+     
+     if($userType == "patient")
+     {
+         return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken,
+                 "type"=>$userType];
+     }else
+     {
+         return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken,
+                 "type"=>$userType];
+     }
+     
+     
+ });
+
+
+/////////////////////////////////////////// Patient routes ///////////////////////////////////////////
+Route::group(['middleware' => 'auth:patient'], function () {
+    Route::get('/patients/{id}',[PatientController::class,"show"])->whereNumber('id'); //
+    Route::put('/patients/{id}',[PatientController::class,"update"])->whereNumber('id');//
+    Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->whereNumber('id');//
+    Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->whereNumber('id');//
+    Route::delete('/patients/{id}/reservations/{reservation_id}',[ReservationController::class,"destroy"])->whereNumber('id','reservation_id');//
 });
+
+/////////////////////////////////////////// Doctor routes ///////////////////////////////////////////
+Route::group(['middleware' => 'auth:doctor'], function () {
+    Route::get("/doctors/{id}",[DoctorController::class,"show"])->whereNumber('id');//
+    Route::put("/doctors/{id}",[DoctorController::class,"update"])->whereNumber('id');//
+    Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"])->whereNumber('doctor_id');//
+    Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->whereNumber('doctor_id');//
+    Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->whereNumber('doctor_id','appointment_id');//
+    Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->whereNumber('doctor_id','appointment_id');//
+    Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"])->whereNumber('doctor_id','appointment_id');//
+    Route::put("/doctors/{doctor_id}/reservations/{reservation_id}", [ReservationController::class, "changeStatus"])->whereNumber('doctor_id','reservation_id');//
+    Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->whereNumber('doctor_id');//
+});
+
+/////////////////////////////////////////// User routes ///////////////////////////////////////////
+
+Route::group(['middleware' => 'auth:patient'], function () {
+    Route::get("/patients/notifications", [UserController::class, "displayAllNotifications"]);
+    Route::put('/patients/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
+});
+
+Route::group(['middleware' => 'auth:doctor'], function () {
+    Route::get("/doctors/notifications", [UserController::class, "displayAllNotifications"]);
+    Route::put('/doctors/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
+});
+
+Route::post('/patients',[PatientController::class,"store"]); //
+Route::get("/doctors", [DoctorController::class, "index"]); //
+Route::get("/doctors/{id}/info", [DoctorController::class, "show"]); //
+Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);//
+
+
+
+//payment Route
+
+Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
+Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"]);
+// Test
+Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentController::class,"changeStatus"]);
+Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
+
 
 /////////////////////////////////////////// Admin routes ///////////////////////////////////////////
 
@@ -161,6 +175,7 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 
 //////////////////////////////////////////////////////////////
 
+// email routes
 Route::get("redirect/facebook", [SocialController::class, "redirect"]);
 
 Route::get("callback/facebook", [SocialController::class, "callback"]);

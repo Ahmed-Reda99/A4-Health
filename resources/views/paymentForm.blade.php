@@ -25,7 +25,7 @@
     <script>
         var a = document.getElementById("a");
         var b = document.getElementById("b");
-        console.log(a.value);
+        
         var config = {
             
           countryCode: a.value, // Here, add your Country Code.
@@ -78,10 +78,16 @@
             myFatoorah.submit()
             // On success
             .then(function (response) {
+              var sessionId = response.SessionId;     
+              var url = "http://127.0.0.1:8000/api/patients/1/reservations/1/pay/now/"+sessionId;
+              fetch(url)
+            .then(response => response.json())
+            .then(data => console.log(data));
             // Here you need to pass session id to you backend here
-            var sessionId = response.SessionId;
+            
             var cardBrand = response.CardBrand;
             
+            })
             // In case of errors
             .catch(function (error) {
                 console.log(error);

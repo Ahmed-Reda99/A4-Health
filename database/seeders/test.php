@@ -21,7 +21,8 @@ class test extends Seeder
             'fname' => 'Abdelrahman',
             'lname' => 'Saied',
             'gender' => 'male',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'phone' => '01208347473'
         ]);
         DB::table('specializations')->insert([
             'name' => "Heart"
@@ -41,7 +42,8 @@ class test extends Seeder
             'fname' => 'Maohmod',
             'lname' => 'Hassan',
             'gender' => 'male',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'phone' => '01208348484'
         ]);
         DB::table('doctors')->insert([
             'id' => 2,
@@ -72,7 +74,8 @@ class test extends Seeder
             'fname' => 'Ahmed',
             'lname' => 'Mohamed',
             'gender' => 'male',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'phone' => '01201227473'
         ]);
         DB::table('patients')->insert([
             'id' => 3
@@ -83,7 +86,8 @@ class test extends Seeder
             'fname' => 'Mona',
             'lname' => 'Ahmed',
             'gender' => 'female',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'phone' => '01108347473'
         ]);
         DB::table('patients')->insert([
             'id' => 4
