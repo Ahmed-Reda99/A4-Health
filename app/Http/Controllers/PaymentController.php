@@ -53,9 +53,24 @@ class PaymentController extends Controller
         // $invoice->save();
         return $paymentLink;
     }
-    function executePaymentgetway()
+    public function executePaymentgetway($id,$reservation_id,$sessionID)
     {
-        return "hi";
+        //$patient_id = auth()->guard('patient')->user()->id;
+        $patient_id = 5;
+        $reservation = Reservation::find($reservation_id);
+        if(!$reservation)
+        {
+            return "Not reserved";
+        }
+        $postFields = [
+            'SessionId'       => $sessionID,
+            'InvoiceValue'    => $reservation->appointment->doctor->fees,
+            'CallBackUrl'     => 'http://127.0.0.1:8000/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
+            'ErrorUrl'        => 'https://example.com/callback.php',
+        ];
+        
+        $data = $this->executePayment(env("MYFATOORAH_URL"), env("MYFATOORAH_TOKEN"), $postFields);
+        return $data->PaymentURL;
     }
     function InitiateSession($apiURL, $apiKey, $postFields) {
 
@@ -119,9 +134,12 @@ class PaymentController extends Controller
     
         return $error;
     }
-    public function changeStatus()
+    public function changeStatus($id,$reservation_id)
     {
-
+        $reservation = Reservation::find($reservation_id);
+        $reservation->payment_status = "paied";
+        $reservation->save();
+        return "done";
     }
 }
 

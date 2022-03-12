@@ -39,32 +39,37 @@ Route::get("unauthenticated",function(){
 
 /////////////////////////////////////////// Patient routes ///////////////////////////////////////////
 Route::group(['middleware' => 'auth:patient'], function () {
-    Route::get('/patients/{id}',[PatientController::class,"show"]); //
-    Route::put('/patients/{id}',[PatientController::class,"update"]);//
-    Route::post('/patients/{id}/reservations',[ReservationController::class,"store"]);//
-    Route::get('/patients/{id}/reservations',[ReservationController::class,"index"]);//
-    Route::delete('/patients/{id}/reservations/{reservation_id}',[ReservationController::class,"destroy"]);//
+    Route::get('/patients/{id}',[PatientController::class,"show"])->whereNumber('id'); //
+    Route::put('/patients/{id}',[PatientController::class,"update"])->whereNumber('id');//
+    Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->whereNumber('id');//
+    Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->whereNumber('id');//
+    Route::delete('/patients/{id}/reservations/{reservation_id}',[ReservationController::class,"destroy"])->whereNumber('id','reservation_id');//
 });
 
 /////////////////////////////////////////// Doctor routes ///////////////////////////////////////////
 Route::group(['middleware' => 'auth:doctor'], function () {
-    Route::get("/doctors/{id}",[DoctorController::class,"show"]);//
-    Route::put("/doctors/{id}",[DoctorController::class,"update"]);//
-    Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"]);//
-    Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"]);//
-    Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"]);//!
-    Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"]);//!
-    Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"]);//
-    Route::put("/doctors/{doctor_id}/reservations/{reservation_id}", [ReservationController::class, "changeStatus"]);//
-    Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"]);//
+    Route::get("/doctors/{id}",[DoctorController::class,"show"])->whereNumber('id');//
+    Route::put("/doctors/{id}",[DoctorController::class,"update"])->whereNumber('id');//
+    Route::post("/doctors/{doctor_id}/appointments", [AppointmentController::class, "store"])->whereNumber('doctor_id');//
+    Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->whereNumber('doctor_id');//
+    Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->whereNumber('doctor_id','appointment_id');//
+    Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->whereNumber('doctor_id','appointment_id');//
+    Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"])->whereNumber('doctor_id','appointment_id');//
+    Route::put("/doctors/{doctor_id}/reservations/{reservation_id}", [ReservationController::class, "changeStatus"])->whereNumber('doctor_id','reservation_id');//
+    Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->whereNumber('doctor_id');//
 });
 
 /////////////////////////////////////////// User routes ///////////////////////////////////////////
 
 // could not defind auth->user;
-Route::group(['middleware' => 'auth:user'], function () {
-    Route::get("/notifications", [UserController::class, "displayAllNotifications"]);
-    Route::put('/patients/{id}/password',[UserController::class,"updatePassword"]);
+Route::group(['middleware' => 'auth:patient'], function () {
+    Route::get("/patients/notifications", [UserController::class, "displayAllNotifications"]);
+    Route::put('/patients/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
+});
+
+Route::group(['middleware' => 'auth:doctor'], function () {
+    Route::get("/doctors/notifications", [UserController::class, "displayAllNotifications"]);
+    Route::put('/doctors/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
 });
 
 Route::post('/patients',[PatientController::class,"store"]); //
@@ -78,7 +83,9 @@ Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"])
 
 Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
 Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"]);
-// Route::get('/patients/reservations/pay/done',[PaymentController::class,"changeStatus"]);
+// Test
+Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentController::class,"changeStatus"]);
+Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
 
 
 
@@ -121,7 +128,8 @@ Route::get("login",function(){
 
 Route::middleware('auth:sanctum')->get('/logout', function(){
     //Error
-    // auth()->user()->currentAccessToken()->delete();
+
+    //auth()->user()->currentAccessToken()->delete();
     return "Logged Out Successfully";
 
 });

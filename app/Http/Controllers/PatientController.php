@@ -39,9 +39,7 @@ class PatientController extends Controller
             //could return sacturm token
             return "inserted";
 
-        } catch (ValidationException $ex) {
-            return $ex->errors();
-        } catch(Throwable $th){
+        }catch(Throwable $th){
             return $user;
         }
         
@@ -74,7 +72,7 @@ class PatientController extends Controller
         } catch(Throwable $th){
             return $th;
         }
-        return "updated";
+        
 
     }    
     public function destroy($id)

@@ -93,6 +93,7 @@ class UserController extends Controller
         }catch(ValidationException $ex)
         {
             throw $ex;
+            //return $ex;
         }
 
     }
