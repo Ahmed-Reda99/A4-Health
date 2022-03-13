@@ -84,7 +84,7 @@ class DoctorController extends Controller
             return $ex->errors();
         } catch(Throwable $th){
             DB::rollBack();
-            return "not inserted";
+            return $th;
         } 
     }
 
