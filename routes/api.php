@@ -71,11 +71,11 @@ Route::post('/login', function (Request $request) {
      
      if($userType == "patient")
      {
-         return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken,
+         return ["token"=>$user->patient->createToken("HP")->plainTextToken,
                  "type"=>$userType];
      }else
      {
-         return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken,
+         return ["token"=>$user->doctor->createToken("HP")->plainTextToken,
                  "type"=>$userType];
      }
      
