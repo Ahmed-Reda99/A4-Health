@@ -36,52 +36,6 @@ Route::get("unauthenticated",function(){
 })->name('unauthenticated');
 
 
-// route for logging out
-
-Route::middleware('auth:sanctum')->get('/logout', function(){
-    
-    //auth()->user()->currentAccessToken()->delete();
-    return "Logged Out Successfully";
-    
-});
-
-Route::get('/token', function () {
-    return csrf_token(); //X-CSRF-TOKEN
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// route for patient and doctor login
-
-Route::post('/login', function (Request $request) { 
-
-    // Catch Excation is required
-     $request->validate([
-         'username' => 'required',
-         'password' => 'required',
-         'device_name' => 'required'
-     ]);
-     $user = User::where('username', $request->username)->first();
-  
-     if (! $user || ! Hash::check($request->password, $user->password)) {
-         
-         return ["error"=>"username or password is incorrect"];
-     }
-     $userType = $user->doctor? "doctor" : "patient";
-     
-     if($userType == "patient")
-     {
-         return ["token"=>$user->patient->createToken("HP")->plainTextToken,
-                 "type"=>$userType];
-     }else
-     {
-         return ["token"=>$user->doctor->createToken("HP")->plainTextToken,
-                 "type"=>$userType];
-     }
-     
-     
- });
-
 
 /////////////////////////////////////////// Patient routes ///////////////////////////////////////////
 Route::group(['middleware' => 'auth:patient'], function () {
@@ -107,6 +61,7 @@ Route::group(['middleware' => 'auth:doctor'], function () {
 
 /////////////////////////////////////////// User routes ///////////////////////////////////////////
 
+// could not defind auth->user;
 Route::group(['middleware' => 'auth:patient'], function () {
     Route::get("/patients/notifications", [UserController::class, "displayAllNotifications"]);
     Route::put('/patients/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
@@ -133,6 +88,55 @@ Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentContr
 Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
 
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// route for patient and doctor login
+
+Route::post('/login', function (Request $request) { 
+
+   // Catch Excation is required
+    $request->validate([
+        'username' => 'required',
+        'password' => 'required',
+        'device_name' => 'required'
+    ]);
+    $user = User::where('username', $request->username)->first();
+ 
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        
+        return ["error"=>"username or password is incorrect"];
+    }
+    $userType = $user->doctor? "doctor" : "patient";
+    
+    if($userType == "patient")
+    {
+        return ["token"=>$user->patient->createToken($request->device_name)->plainTextToken];
+    }else
+    {
+        return ["token"=>$user->doctor->createToken($request->device_name)->plainTextToken];
+    }
+    
+    
+});
+Route::get("login",function(){
+    return "you must login";
+})->name('login');
+
+// route for logging out
+
+Route::middleware('auth:sanctum')->get('/logout', function(){
+    //Error
+
+    //auth()->user()->currentAccessToken()->delete();
+    return "Logged Out Successfully";
+
+});
+Route::get('/token', function () {
+    return csrf_token();
+});
+
 /////////////////////////////////////////// Admin routes ///////////////////////////////////////////
 
 Route::post("/dashboard/login", function(Request $request){
@@ -144,7 +148,7 @@ Route::post("/dashboard/login", function(Request $request){
         return ["error"=>"username or password is incorrect"];
     }
 
-    return ["token"=>$admin->createToken("HP")->plainTextToken];
+    return ["token"=>$admin->createToken($request->device_name)->plainTextToken];
 
 });
 
@@ -173,14 +177,7 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 });
 
 
-//////////////////////////////////////////////////////////////
-
 // email routes
 Route::get("redirect/facebook", [SocialController::class, "redirect"]);
 
 Route::get("callback/facebook", [SocialController::class, "callback"]);
-
-//////////////////////////////////////////////////////////////
-
-Route::post("/verify",[UserController::class, "verifyPhone"]);
-Route::delete("/deleteUnverifiedUser/{id}", [UserController::class, "destroy"])->where('id', '[0-9]+');
