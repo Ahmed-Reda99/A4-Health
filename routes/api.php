@@ -40,7 +40,7 @@ Route::get("unauthenticated",function(){
 
 Route::middleware('auth:sanctum')->get('/logout', function(){
     
-    auth()->user()->currentAccessToken()->delete();
+    //auth()->user()->currentAccessToken()->delete();
     return "Logged Out Successfully";
     
 });

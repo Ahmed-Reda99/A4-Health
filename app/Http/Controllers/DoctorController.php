@@ -122,10 +122,10 @@ class DoctorController extends Controller
             $user = (new UserController)->update($request,$id);
             $request->validate([
                 "img_name" => "bail|required",
-                "description" => "bail|required",
-                "street" => "bail|required",
-                "city" => "bail|required",
-                "fees" => "bail|required"
+                "description" => "bail|string|min:15|max:50",
+                "street" => "bail|string|min:3|max:20",
+                "city" => "bail|required|string|min:4|max:15",
+                "fees" => "bail|numeric|min:1"
             ]);
             $doctor = $user->doctor;
             $doctor->description = $request->description;
