@@ -23,9 +23,9 @@ use App\Http\Controllers\SocialController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::resource("/doctors", DoctorController::class);
 
