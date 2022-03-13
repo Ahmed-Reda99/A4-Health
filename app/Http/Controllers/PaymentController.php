@@ -19,7 +19,10 @@ class PaymentController extends Controller
         // }
         $ipPostFields = ['InvoiceAmount' => 100, 'CurrencyIso' => 'KWD'];
         $paymentMethods = $this->InitiateSession(env("MYFATOORAH_URL"), env("MYFATOORAH_TOKEN"), $ipPostFields);
-
+        return
+        [
+            $paymentMethods->CountryCode,$paymentMethods->SessionId
+        ];
         return view("paymentForm",["data"=>$paymentMethods->CountryCode,"data2"=>$paymentMethods->SessionId]);
         $paymentMethodId = 2;
         // $postFields = [
