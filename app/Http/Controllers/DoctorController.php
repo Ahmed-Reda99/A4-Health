@@ -68,8 +68,20 @@ class DoctorController extends Controller
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
 
+
+            if (request()->hasFile('img_name')) //if user choose file
+            {
+
+                $file = request()->file('img_name'); //store  uploaded file to variable $file to 
+
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'doctor-image' . '_' . time() . '.' . $extension;
+                $file->storeAs('public/assets', $filename); //make folder assets in public/storage/assets and put file
+
+            }
+
             $doctor->description = $request->description;
-            $doctor->img_name = $request->img_name;
+            $doctor->img_name = $filename;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
             $doctor->specialization_id = $request->specialization_id ;
@@ -95,6 +107,8 @@ class DoctorController extends Controller
         {
             $id = auth()->guard('doctor')->user()->id;
         }
+        
+        
         $doctor = Doctor::find($id);
         $data = [
             'username'=>$doctor->user->username,
@@ -109,7 +123,8 @@ class DoctorController extends Controller
             'title' => $doctor->title,
             'fees'=>$doctor->fees,
             'phone'=>$doctor->user->phone,
-            'appointment' => $doctor->appointments
+            'appointment' => $doctor->appointments,
+            'image' => $this->showImage($id)
 
         ];
         return $data;
@@ -153,4 +168,14 @@ class DoctorController extends Controller
     {
         return (new UserController)->destroy($id);
     }
+
+
+    public function showImage($doctorId)
+    {
+        $img_name = Doctor::find($doctorId)->img_name;
+        $imgsrc= asset('storage/assets/'. $img_name);
+        return response()->json($imgsrc);
+    }
+
+
 }
