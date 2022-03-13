@@ -144,7 +144,7 @@ Route::post("/dashboard/login", function(Request $request){
         return ["error"=>"username or password is incorrect"];
     }
 
-    return ["token"=>$admin->createToken($request->device_name)->plainTextToken];
+    return ["token"=>$admin->createToken("HP")->plainTextToken];
 
 });
 
