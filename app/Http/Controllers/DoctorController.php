@@ -59,12 +59,12 @@ class DoctorController extends Controller
             
             
             $request->validate([
-                'description'         =>   'bail|string|min:15|max:50',
-                // 'img_name'            =>   'bail|image|mimes:jpeg,pmb,png,jpg|max:88453',
-                'street'              =>   'bail|string|min:3|max:20',
-                'city'                =>   'bail|required|string|min:4|max:15',
+                'description'         =>   'bail|required|min:15|max:50',
+                'img_name'            =>   'bail|required|image|mimes:jpeg,pmb,png,jpg|max:88453',
+                'street'              =>   'bail|required|min:3|max:20',
+                'city'                =>   'bail|required|min:4|max:15',
                 'specialization_id'   =>   'bail|required',
-                'fees'                =>   'bail|numeric|min:1',
+                'fees'                =>   'bail|required|numeric|min:1',
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
 
@@ -84,7 +84,7 @@ class DoctorController extends Controller
             return $ex->errors();
         } catch(Throwable $th){
             DB::rollBack();
-            return "not inserted";
+            return $th;
         } 
     }
 
@@ -121,11 +121,13 @@ class DoctorController extends Controller
             $id = auth()->guard('doctor')->user()->id;
             $user = (new UserController)->update($request,$id);
             $request->validate([
-                "img_name" => "bail|required",
-                "description" => "bail|string|min:15|max:50",
-                "street" => "bail|string|min:3|max:20",
-                "city" => "bail|required|string|min:4|max:15",
-                "fees" => "bail|numeric|min:1"
+                'description'         =>   'bail|required|min:15|max:50',
+                'img_name'            =>   'bail|required|image|mimes:jpeg,pmb,png,jpg|max:88453',
+                'street'              =>   'bail|required|min:3|max:20',
+                'city'                =>   'bail|required|min:4|max:15',
+                'specialization_id'   =>   'bail|required',
+                'fees'                =>   'bail|required|numeric|min:1',
+                'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
             $doctor = $user->doctor;
             $doctor->description = $request->description;
