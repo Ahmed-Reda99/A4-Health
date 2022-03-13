@@ -60,7 +60,7 @@ class DoctorController extends Controller
             
             $request->validate([
                 'description'         =>   'bail|required|min:15|max:50',
-                'img_name'            =>   'bail|required|image|mimes:jpeg,pmb,png,jpg|max:88453',
+                'img_name'            =>   'bail|image|mimes:jpeg,pmb,png,jpg|max:88453',
                 'street'              =>   'bail|required|min:3|max:20',
                 'city'                =>   'bail|required|min:4|max:15',
                 'specialization_id'   =>   'bail|required',
