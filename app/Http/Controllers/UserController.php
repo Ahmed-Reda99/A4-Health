@@ -101,7 +101,10 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::destroy($id);
-        return "deleted";
+        return 
+        [
+            'response' => "deleted"
+        ];
     }
 
     public function displayAllNotifications()
@@ -154,7 +157,10 @@ class UserController extends Controller
         {
             return $ex->errors();
         }
-        return "updated";
+        return 
+        [
+            'response' => "updated"
+        ];
     }
 
 }

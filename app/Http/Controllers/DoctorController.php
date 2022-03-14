@@ -93,7 +93,10 @@ class DoctorController extends Controller
             $doctor->save();
     
             DB::commit();
-            return "inserted";
+            return 
+            [
+                'response' => "inserted"
+            ];
 
         } catch(ValidationException $ex) {
             DB::rollBack();

@@ -122,7 +122,10 @@ class AppointmentController extends Controller
             return $e->errors();
         }
 
-        return "updated";
+        return 
+        [
+            'response' => "updated"
+        ];
 
     }
 
@@ -138,6 +141,9 @@ class AppointmentController extends Controller
         }
         Appointment::destroy($appointment_id);
 
-        return "deleted";
+        return 
+        [
+            'response' => "deleted"
+        ];
     }
 }

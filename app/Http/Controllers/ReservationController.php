@@ -71,7 +71,10 @@ class ReservationController extends Controller
             DB::rollBack();
             return $ex->errors();
         }
-        return "done";
+        return 
+        [
+            'response' => "done"
+        ];
         
     }
 
@@ -112,7 +115,10 @@ class ReservationController extends Controller
         {
             return $ex->errors();
         }
-        return "updated";
+        return 
+        [
+            'response' => "updated"
+        ];
     }
 
     
@@ -132,7 +138,10 @@ class ReservationController extends Controller
         }
         $reservation->appointment->doctor->notify(new ReservationCancelled($reservation));
         Reservation::destroy($id);
-        return "deleted";
+        return 
+        [
+            'response' => "deleted"
+        ];
     }
     public function indexPatients($id,$appointment_id)
     {
@@ -161,13 +170,19 @@ class ReservationController extends Controller
         $reservation = Reservation::find($id);
         if($reservation->appointment->doctor->user->id != $doctor_id)
         {
-            return "Not Owned Appointment";
+            return 
+            [
+                'response' => "Not owned"
+            ];
         }
         $reservation->status = 'completed';
         $reservation->save();
         $patient = Patient::find($reservation->patient);
         Notification::send($patient,new FeedbackNptification($reservation->appointment));
-        return "done";
+        return 
+        [
+            'response' => "done"
+        ];
 
     }
 }

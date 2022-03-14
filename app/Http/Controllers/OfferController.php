@@ -44,7 +44,10 @@ class OfferController extends Controller
         {
             return $ex->errors();
         }
-        return "inserted";
+        return 
+        [
+            'response' => "inserted"
+        ];
     }
 
     
@@ -81,7 +84,10 @@ class OfferController extends Controller
         {
             return $ex->errors();
         }
-        return "updated";
+        return 
+        [
+            'response' => "updated"
+        ];
     }
 
     
@@ -89,6 +95,9 @@ class OfferController extends Controller
     {
         //
         Offer::find($offer_id)->delete();
-        return "deleted";
+        return 
+        [
+            'response' => "deleted"
+        ];
     }
 }

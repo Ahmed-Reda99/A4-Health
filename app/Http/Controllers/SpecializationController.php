@@ -25,7 +25,10 @@ class SpecializationController extends Controller
         $spec = new Specialization;
         $spec->name = $request->name;
         $spec->save();
-        return "inserted";
+        return 
+        [
+            'response' => "inserted"
+        ];
     }
 
     
@@ -46,13 +49,19 @@ class SpecializationController extends Controller
         $spec = Specialization::find($id);
         $spec->name = $request->name;
         $spec->save();
-        return "updated";
+        return 
+        [
+            'response' => "updated"
+        ];
     }
 
     
     public function destroy($id)
     {
         Specialization::destroy($id);
-        return "deleted";
+        return 
+        [
+            'response' => "deleted"
+        ];
     }
 }
