@@ -59,20 +59,20 @@ class PaymentController extends Controller
     }
     public function executePaymentgetway($id,$reservation_id,$sessionID)
     {
-        //$patient_id = auth()->guard('patient')->user()->id;
-        // $patient_id = 5;
-        // $reservation = Reservation::find($reservation_id);
-        // if(!$reservation)
-        // {
-        //     return "Not reserved";
-        // }
+        $patient_id = auth()->guard('patient')->user()->id;
+        $patient_id = 5;
+        $reservation = Reservation::find($reservation_id);
+        if(!$reservation)
+        {
+            return "Not reserved";
+        }
 
-        // $postFields = [
-        //     'SessionId'       => $sessionID,
-        //     'InvoiceValue'    => $reservation->appointment->doctor->fees,
-        //     'CallBackUrl'     => 'http://127.0.0.1:8000/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
-        //     'ErrorUrl'        => 'https://example.com/callback.php',
-        // ];
+        $postFields = [
+            'SessionId'       => $sessionID,
+            'InvoiceValue'    => $reservation->appointment->doctor->fees,
+            'CallBackUrl'     => 'https://a4-health.herokuapp.com/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
+            'ErrorUrl'        => 'https://example.com/callback.php',
+        ];
 
         $postFields = [
             'SessionId'       => $sessionID,
@@ -151,9 +151,9 @@ class PaymentController extends Controller
     }
     public function changeStatus($id,$reservation_id)
     {
-        // $reservation = Reservation::find($reservation_id);
-        // $reservation->payment_status = "paied";
-        // $reservation->save();
+        $reservation = Reservation::find($reservation_id);
+        $reservation->payment_status = "paied";
+        $reservation->save();
         return 
         [
             'data'=>"done"

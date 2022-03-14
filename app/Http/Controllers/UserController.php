@@ -143,8 +143,8 @@ class UserController extends Controller
         {
             $id = auth()->user()->id;
             $this->validate($request,[
-                'old_password' => 'required',
-                'password' => 'required|confirmed',
+                'old_password' => 'required|min:8',
+                'password' => 'required|confirmed|min:8',
             ]);
             $user = User::find($id);
             if (! Hash::check($request->old_password, $user->password)) {

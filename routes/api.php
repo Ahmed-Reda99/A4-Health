@@ -85,7 +85,6 @@ Route::get("/specializations", [SpecializationController::class, "index"]);
 
 Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
 Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"]);
-// Test
 Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentController::class,"changeStatus"]);
 Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
 
