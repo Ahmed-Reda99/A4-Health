@@ -72,6 +72,10 @@ class AdminController extends Controller
     {
         return (new SpecializationController)->store($request);
     }
+    public function showSpecialization($specialization_id)
+    {
+        return (new SpecializationController)->show($specialization_id);
+    }
 
 
     public function updateSpecialization(Request $request, $specialization_id)

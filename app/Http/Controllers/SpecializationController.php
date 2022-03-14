@@ -31,7 +31,7 @@ class SpecializationController extends Controller
     
     public function show($id)
     {
-        //
+        return Specialization::find($id);
     }
 
     

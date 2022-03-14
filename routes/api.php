@@ -169,6 +169,7 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 
     Route::get("/dashboard/specializations", "listAllSpecializations");
     Route::post("/dashboard/specializations", "addNewSpecialization");
+    Route::get("/dashboard/specializations/{specialization_id}", "showSpecialization");
     Route::put("/dashboard/specializations/{specialization_id}", "updateSpecialization");
     Route::delete("/dashboard/specializations/{specialization_id}", "deleteSpecialization");
 
