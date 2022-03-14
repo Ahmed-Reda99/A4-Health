@@ -55,7 +55,7 @@ Route::group(['middleware' => 'auth:doctor'], function () {
     Route::get("/doctors/{doctor_id}/appointments", [AppointmentController::class, "index"])->whereNumber('doctor_id');//
     Route::put("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "update"])->whereNumber('doctor_id','appointment_id');//
     Route::delete("/doctors/{doctor_id}/appointments/{appointment_id}", [AppointmentController::class, "destroy"])->whereNumber('doctor_id','appointment_id');//
-    Route::get("/doctors/{doctor_id}/reservations/{appointment_id}", [ReservationController::class, "indexPatients"])->whereNumber('doctor_id','appointment_id');//
+    Route::get("/doctors/{doctor_id}/reservations", [ReservationController::class, "indexPatients"])->whereNumber('doctor_id','appointment_id');//
     Route::put("/doctors/{doctor_id}/reservations/{reservation_id}", [ReservationController::class, "changeStatus"])->whereNumber('doctor_id','reservation_id');//
     Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->whereNumber('doctor_id');//
 });

@@ -69,10 +69,7 @@ class ReservationController extends Controller
         }catch(ValidationException $ex)
         {
             DB::rollBack();
-            return
-            [
-                'errors' => $ex->errors()
-            ];
+            return $ex->errors();
         }
         return 
         [
@@ -116,10 +113,7 @@ class ReservationController extends Controller
             ->update(['patient_time' => $request->patient_time]);
         }catch(ValidationException $ex)
         {
-            return
-            [
-                'errors' => $ex->errors()
-            ];
+            return $ex->errors();
         }
         return 
         [
@@ -149,26 +143,33 @@ class ReservationController extends Controller
             'response' => "deleted"
         ];
     }
-    public function indexPatients($id,$appointment_id)
+    public function indexPatients($id)
     {
         //possible validation
         $id = auth()->guard('doctor')->user()->id;
-        $appointment = Appointment::find($appointment_id);
-        if($appointment->doctor->user->id != $id)
+        $appointments = Appointment::where('doctor_id',$id)->get();
+        $allData = array();
+        foreach($appointments as $oneAppointment)
         {
-            return "Not Owned Appointment";
+            $reservations = Reservation::where('appointment_id',$oneAppointment->id)->get();
+            $data = collect($reservations)->map(function($oneReservation){
+                return
+                [
+                    'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->lname,
+                    'patientTime' => $oneReservation->patient_time,
+                    'status'=> $oneReservation->status,
+                    'payment_status' => $oneReservation->payment_status
+                ];
+            
+            });
+
+            $oneData = ['appointment_id' => $oneAppointment->id,'reservations' => $data];
+            array_push($allData,$oneData);
+
         }
-        $reservations = Reservation::where('appointment_id',$appointment_id)->get();
-        $data = collect($reservations)->map(function($oneReservation){
-            return
-            [
-                'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->lname,
-                'patientTime' => $oneReservation->patient_time,
-                'status'=> $oneReservation->status,
-                'payment_status' => $oneReservation->payment_status
-            ];
-        });
-        return $data;
+        
+        
+        return $allData;
     }
     public function changeStatus($id,$reservation_id)
     {
