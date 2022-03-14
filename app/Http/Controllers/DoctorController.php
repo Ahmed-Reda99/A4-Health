@@ -24,7 +24,11 @@ class DoctorController extends Controller
             {
                array_push($ratings,$rating->rate);
             }
-            $average = array_sum($ratings) / count($ratings);
+            $average = 0;
+            if(!count($ratings) == 0)
+            {
+                $average = array_sum($ratings) / count($ratings);
+            }
             return 
             [
                 'id' => $doctor->id,
