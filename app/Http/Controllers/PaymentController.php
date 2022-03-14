@@ -77,7 +77,7 @@ class PaymentController extends Controller
         $postFields = [
             'SessionId'       => $sessionID,
             'InvoiceValue'    => 50,
-            'CallBackUrl'     => "",
+            'CallBackUrl'     => "https://example.com/callback.php",
             'ErrorUrl'        => 'https://example.com/callback.php',
         ];
         
