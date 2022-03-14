@@ -61,8 +61,7 @@ class PatientController extends Controller
             'fname'=>$patient->user->fname,
             'lname'=>$patient->user->lname,
             'gender'=>$patient->user->gender,
-            'phone'=>$patient->user->phone,
-            'city'=>$patient->user->city,
+            'phone'=>$patient->user->phone
         ];
         return $patient;
     }    
