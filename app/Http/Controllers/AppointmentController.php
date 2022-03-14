@@ -97,13 +97,16 @@ class AppointmentController extends Controller
         
         try {
             $doctor_id = auth()->guard('doctor')->user()->id;
-            $request->validate([
-                "start_time"=>Rule::unique('appointments')->where(function ($query){
-                    global $request;
-                    return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
-                    
-                })
-            ]);
+            if($doctor_id != $request->doctor_id)
+            {
+                $request->validate([
+                    "start_time"=>Rule::unique('appointments')->where(function ($query){
+                        global $request;
+                        return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
+                        
+                    })
+                ]);
+            }
             
             $request->validate([
                 "start_time"=>"bail|required|date_format:H:i",
