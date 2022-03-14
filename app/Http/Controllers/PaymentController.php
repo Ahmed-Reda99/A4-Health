@@ -60,16 +60,24 @@ class PaymentController extends Controller
     public function executePaymentgetway($id,$reservation_id,$sessionID)
     {
         //$patient_id = auth()->guard('patient')->user()->id;
-        $patient_id = 5;
-        $reservation = Reservation::find($reservation_id);
-        if(!$reservation)
-        {
-            return "Not reserved";
-        }
+        // $patient_id = 5;
+        // $reservation = Reservation::find($reservation_id);
+        // if(!$reservation)
+        // {
+        //     return "Not reserved";
+        // }
+
+        // $postFields = [
+        //     'SessionId'       => $sessionID,
+        //     'InvoiceValue'    => $reservation->appointment->doctor->fees,
+        //     'CallBackUrl'     => 'http://127.0.0.1:8000/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
+        //     'ErrorUrl'        => 'https://example.com/callback.php',
+        // ];
+
         $postFields = [
             'SessionId'       => $sessionID,
-            'InvoiceValue'    => $reservation->appointment->doctor->fees,
-            'CallBackUrl'     => 'http://127.0.0.1:8000/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
+            'InvoiceValue'    => 50,
+            'CallBackUrl'     => "",
             'ErrorUrl'        => 'https://example.com/callback.php',
         ];
         
