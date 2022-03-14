@@ -155,7 +155,11 @@ class ReservationController extends Controller
             $data = collect($reservations)->map(function($oneReservation){
                 return
                 [
+                    'id' => $oneReservation->id,
                     'patientName' => $oneReservation->patient->user->fname." ".$oneReservation->patient->user->lname,
+                    'gender' => $oneReservation->patient->user->gender,
+                    'date' => $oneReservation->appointment->date,
+                    'phone' => $oneReservation->patient->user->phone,
                     'patientTime' => $oneReservation->patient_time,
                     'status'=> $oneReservation->status,
                     'payment_status' => $oneReservation->payment_status
