@@ -95,47 +95,43 @@ class AppointmentController extends Controller
     {
         
         
-        // try {
+        try {
             $doctor_id = auth()->guard('doctor')->user()->id;
-        //     $request->validate([
-        //         "start_time"=>Rule::unique('appointments')->where(function ($query){
-        //             global $request;
-        //             return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
+            $request->validate([
+                "start_time"=>Rule::unique('appointments')->where(function ($query){
+                    global $request;
+                    return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
                     
-        //         })
-        //     ]);
+                })
+            ]);
             
-        //     $request->validate([
-        //         "start_time"=>"bail|required|date_format:H:i",
-        //         "date"=>"bail|required|date_format:Y-m-d",
-        //         "patient_limit"=>"bail|required|numeric",
-        //         "examination_time"=>"bail|required|numeric"
+            $request->validate([
+                "start_time"=>"bail|required|date_format:H:i",
+                "date"=>"bail|required|date_format:Y-m-d",
+                "patient_limit"=>"bail|required|numeric",
+                "examination_time"=>"bail|required|numeric"
                 
-        //     ]);
+            ]);
             
-        //     $appoint = Appointment::find($appointment_id);
-        //     $appoint->start_time = $request->start_time;
-        //     $appoint->date = $request->date;
-        //     $appoint->patient_limit = $request->patient_limit;
-        //     $appoint->examination_time = $request->examination_time;
-        //     $appoint->save();
+            $appoint = Appointment::find($appointment_id);
+            $appoint->start_time = $request->start_time;
+            $appoint->date = $request->date;
+            $appoint->patient_limit = $request->patient_limit;
+            $appoint->examination_time = $request->examination_time;
+            $appoint->save();
             
 
-        // } catch (ValidationException $e) {
-        //     return
-        //     [
-        //         'errors' => $e->errors()
-        //     ];
-        // }
+        } catch (ValidationException $e) {
+            return
+            [
+                'errors' => $e->errors()
+            ];
+        }
 
-        // return 
-        // [
-        //     'response' => "updated"
-        // ];
-        return ["start_time"=>$request->start_time,
-                "date"=>$request->date,
-                "patient"=>$request->patient_limit,
-                "examine"=>$request->examination_time];
+        return 
+        [
+            'response' => "updated"
+        ];
 
     }
 
