@@ -132,8 +132,10 @@ class AppointmentController extends Controller
         // [
         //     'response' => "updated"
         // ];
-        return ["request"=>$request,
-                "id"=>$doctor_id];
+        return ["start_time"=>$request->start_time,
+                "date"=>$request->date,
+                "patient"=>$request->patient_limit,
+                "examine"=>$request->examination_time];
 
     }
 
