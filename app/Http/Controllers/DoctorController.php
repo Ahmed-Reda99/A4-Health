@@ -96,7 +96,8 @@ class DoctorController extends Controller
             return $ex->errors();
         } catch(Throwable $th){
             DB::rollBack();
-            return $th;
+            if(gettype($user) == 'array') return $user;
+            throw $th;
         } 
     }
 
