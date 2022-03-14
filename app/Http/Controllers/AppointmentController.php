@@ -62,7 +62,10 @@ class AppointmentController extends Controller
             return $e->errors();
         }
 
-        return "inserted";
+        return 
+        [
+            'response' => "inserted"
+        ];
     }
 
     
