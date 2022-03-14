@@ -43,7 +43,10 @@ class PatientController extends Controller
 
 
         }catch(Throwable $th){
-            return $user;
+            return
+            [
+                'errors' => $user
+            ];
         }
         
     }
@@ -71,9 +74,12 @@ class PatientController extends Controller
             (new UserController)->update($request,$id);
         }catch(ValidationException $ex)
         {
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         } catch(Throwable $th){
-            return $th;
+            throw $th;
         }
         
 

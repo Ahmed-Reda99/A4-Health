@@ -69,7 +69,10 @@ class ReservationController extends Controller
         }catch(ValidationException $ex)
         {
             DB::rollBack();
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         }
         return 
         [
@@ -113,7 +116,10 @@ class ReservationController extends Controller
             ->update(['patient_time' => $request->patient_time]);
         }catch(ValidationException $ex)
         {
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         }
         return 
         [

@@ -14,6 +14,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SpecializationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,7 @@ Route::post('/patients',[PatientController::class,"store"]); //
 Route::get("/doctors", [DoctorController::class, "index"]); //
 Route::get("/doctors/{id}/info", [DoctorController::class, "show"]); //
 Route::get("/doctors/{doctor_id}/reviews", [FeedbackController::class, "index"]);//
+Route::get("/specializations", [SpecializationController::class, "index"]);
 
 
 

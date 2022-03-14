@@ -58,7 +58,10 @@ class FeedbackController extends Controller
             ];
            
         } catch (ValidationException $e) {
-            return $e->errors();
+            return
+            [
+                'errors' => $e->errors()
+            ];
         }
 
     }

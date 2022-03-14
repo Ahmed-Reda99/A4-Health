@@ -26,7 +26,7 @@ class AppointmentController extends Controller
     public function create($doctor_id)
     {
         // return view("doctors.appointments.create", ["doc_id"=>$doctor_id]);
-        return date("Y-m-d");
+        // return date("Y-m-d");
     }
 
     
@@ -59,7 +59,10 @@ class AppointmentController extends Controller
             $appoint->save();
 
         } catch (ValidationException $e) {
-            return $e->errors();
+            return
+            [
+                'errors' => $e->errors()
+            ];
         }
 
         return 
@@ -105,7 +108,7 @@ class AppointmentController extends Controller
             $request->validate([
                 "start_time"=>"bail|required|date_format:H:i",
                 "date"=>"bail|required|date_format:Y-m-d",
-                "patient_limit"=>"bail|numeric",
+                "patient_limit"=>"bail|required|numeric",
                 "examination_time"=>"bail|required|numeric"
                 
             ]);
@@ -119,7 +122,10 @@ class AppointmentController extends Controller
             
 
         } catch (ValidationException $e) {
-            return $e->errors();
+            return
+            [
+                'errors' => $e->errors()
+            ];
         }
 
         return 

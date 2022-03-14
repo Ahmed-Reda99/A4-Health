@@ -100,10 +100,16 @@ class DoctorController extends Controller
 
         } catch(ValidationException $ex) {
             DB::rollBack();
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         } catch(Throwable $th){
             DB::rollBack();
-            if(gettype($user) == 'array') return $user;
+            if(gettype($user) == 'array') return
+            [
+                'errors' => $user
+            ];
             throw $th;
         } 
     }
@@ -163,10 +169,13 @@ class DoctorController extends Controller
             return "updated";
         } catch (ValidationException $e) {
             DB::rollBack();
-            return $e->errors();
+            return
+            [
+                'errors' => $e->errors()
+            ];
         } catch(Throwable $th){
             DB::rollBack();
-            return $th;
+            throw $th;
         }
         
     }

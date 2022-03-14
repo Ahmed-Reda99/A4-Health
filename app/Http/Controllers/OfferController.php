@@ -42,7 +42,10 @@ class OfferController extends Controller
             $newOffer->save();
         }catch(ValidationException $ex)
         {
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         }
         return 
         [
@@ -82,7 +85,10 @@ class OfferController extends Controller
             $newOffer->save();
         }catch(ValidationException $ex)
         {
-            return $ex->errors();
+            return
+            [
+                'errors' => $ex->errors()
+            ];
         }
         return 
         [
