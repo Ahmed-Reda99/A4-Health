@@ -82,7 +82,11 @@ class PaymentController extends Controller
         ];
         
         $data = $this->executePayment(env("MYFATOORAH_URL"), env("MYFATOORAH_TOKEN"), $postFields);
-        return $data->PaymentURL;
+        return
+        [
+            'url' =>$data->PaymentURL
+        ];
+         
     }
     function InitiateSession($apiURL, $apiKey, $postFields) {
 
