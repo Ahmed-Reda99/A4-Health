@@ -97,11 +97,11 @@ Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]
 Route::post('/login', function (Request $request) { 
 
    // Catch Excation is required
-    $request->validate([
-        'username' => 'required',
-        'password' => 'required',
-        'device_name' => 'required'
-    ]);
+    // $request->validate([
+    //     'username' => 'required',
+    //     'password' => 'required',
+    //     'device_name' => 'required'
+    // ]);
     $user = User::where('username', $request->username)->first();
  
     if (! $user || ! Hash::check($request->password, $user->password)) {

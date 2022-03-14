@@ -86,7 +86,6 @@ class PaymentController extends Controller
         [
             'url' =>$data->PaymentURL
         ];
-         
     }
     function InitiateSession($apiURL, $apiKey, $postFields) {
 
