@@ -175,10 +175,14 @@ class ReservationController extends Controller
         
         return $allData;
     }
-    public function changeStatus($id,$reservation_id)
+    public function changeStatus(Request $request,$doctor_id,$reservation_id)
     {
+        $request->validate([
+            'status' => 'required|in:"completed","cancelled","misssed"'
+        ]);
+        
         $doctor_id = auth()->guard('doctor')->user()->id;
-        $reservation = Reservation::find($id);
+        $reservation = Reservation::find($reservation_id);
         if($reservation->appointment->doctor->user->id != $doctor_id)
         {
             return 
@@ -186,7 +190,7 @@ class ReservationController extends Controller
                 'response' => "Not owned"
             ];
         }
-        $reservation->status = 'completed';
+        $reservation->status = $request->status;
         $reservation->save();
         $patient = Patient::find($reservation->patient);
         Notification::send($patient,new FeedbackNptification($reservation->appointment));
