@@ -112,10 +112,12 @@ Route::post('/login', function (Request $request) {
     
     if($userType == "patient")
     {
-        return ["token"=>$user->patient->createToken("HP")->plainTextToken];
+        return ["token"=>$user->patient->createToken("HP")->plainTextToken,
+                "type"=>$userType];
     }else
     {
-        return ["token"=>$user->doctor->createToken("HP")->plainTextToken];
+        return ["token"=>$user->doctor->createToken("HP")->plainTextToken,
+                "type"=>$userType];
     }
     
     
