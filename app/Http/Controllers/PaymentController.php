@@ -77,8 +77,8 @@ class PaymentController extends Controller
         $postFields = [
             'SessionId'       => $sessionID,
             'InvoiceValue'    => 50,
-            'CallBackUrl'     => "https://example.com/callback.php",
-            'ErrorUrl'        => 'https://example.com/callback.php',
+            'CallBackUrl'     => "http://localhost:49529/paymentMiddleWare",
+            'ErrorUrl'        => 'http://localhost:49529/userdashboard/reservations',
         ];
         
         $data = $this->executePayment(env("MYFATOORAH_URL"), env("MYFATOORAH_TOKEN"), $postFields);
@@ -152,10 +152,13 @@ class PaymentController extends Controller
     }
     public function changeStatus($id,$reservation_id)
     {
-        $reservation = Reservation::find($reservation_id);
-        $reservation->payment_status = "paied";
-        $reservation->save();
-        return "done";
+        // $reservation = Reservation::find($reservation_id);
+        // $reservation->payment_status = "paied";
+        // $reservation->save();
+        return 
+        [
+            'data'=>"done"
+        ];
     }
 }
 
