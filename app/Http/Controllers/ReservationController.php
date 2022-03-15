@@ -193,7 +193,12 @@ class ReservationController extends Controller
             ];
         }
         $reservation->status = $request->status;
+        if($request->status == "completed")
+        {
+            $reservation->payment_status = "paied";
+        }
         $reservation->save();
+
         if($request->status == "completed")
         {
             $patient = Patient::find($reservation->patient);
