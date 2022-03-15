@@ -46,7 +46,7 @@ class DoctorController extends Controller
                     "patient_limit" => $oneAppointment->patient_limit,
                     "examination_time" => $oneAppointment->examination_time,
                     "doctor_id" => $oneAppointment->doctor_id,
-                    'times' => $Times,
+                    'reserved_times' => $Times,
                 ];
                 
             });
