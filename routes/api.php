@@ -45,6 +45,12 @@ Route::group(['middleware' => 'auth:patient'], function () {
     Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->whereNumber('id');//
     Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->whereNumber('id');//
     Route::delete('/patients/{id}/reservations/{reservation_id}',[ReservationController::class,"destroy"])->whereNumber('id','reservation_id');//
+    
+    //payment Route
+
+    Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"])->whereNumber('id');
+    Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"])->whereNumber('id');
+    
 });
 
 /////////////////////////////////////////// Doctor routes ///////////////////////////////////////////
@@ -62,7 +68,7 @@ Route::group(['middleware' => 'auth:doctor'], function () {
 
 /////////////////////////////////////////// User routes ///////////////////////////////////////////
 
-// could not defind auth->user;
+
 Route::group(['middleware' => 'auth:patient'], function () {
     Route::get("/patients/notifications", [UserController::class, "displayAllNotifications"]);
     Route::put('/patients/{id}/password',[UserController::class,"updatePassword"])->whereNumber('id');
@@ -81,10 +87,6 @@ Route::get("/specializations", [SpecializationController::class, "index"]);
 
 
 
-//payment Route
-
-Route::get('/patients/{id}/reservations/{reservation_id}/pay',[PaymentController::class,"payFees"]);
-Route::get('/patients/{id}/reservations/{reservation_id}/pay/now/{sessionID}',[PaymentController::class,"executePaymentgetway"]);
 Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentController::class,"changeStatus"]);
 Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
 
