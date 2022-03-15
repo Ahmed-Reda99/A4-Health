@@ -49,8 +49,9 @@ class UserController extends Controller
             $user->fname = $request->fname;
             $user->lname = $request->lname;
             $user->gender = $request->gender;
-            $user->phone = '2'.$request->phone;
+            $user->phone = $request->phone;
             $user->save();
+            $user->phone = '2'.$request->phone;
             return $user;
             
         }catch(ValidationException $ex)
@@ -84,7 +85,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->fname = $request->fname;
             $user->lname = $request->lname;
-            $user->phone = '2'.$request->phone;
+            $user->phone = $request->phone;
             $user->save();
             return $user;
 

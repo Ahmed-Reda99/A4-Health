@@ -14,6 +14,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\SpecializationController;
 
 /*
