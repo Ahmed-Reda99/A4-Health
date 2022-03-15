@@ -72,14 +72,16 @@ class PatientController extends Controller
         {
             $id = auth()->guard('patient')->user()->id;
             (new UserController)->update($request,$id);
+            return
+            [
+                'respond' => "updated"
+            ];
         }catch(ValidationException $ex)
         {
             return
             [
                 'errors' => $ex->errors()
             ];
-        } catch(Throwable $th){
-            throw $th;
         }
         
 
