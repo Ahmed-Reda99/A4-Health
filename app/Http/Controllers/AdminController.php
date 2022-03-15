@@ -16,10 +16,16 @@ class AdminController extends Controller
 
     public function updateMyPassword(Request $request)
     {
-        if(!Hash::check($request->oldpass, auth()->user()->password)) return ["message"=>"old password is wrong"];
+
+        $request->validate([
+            'old_password' => 'required|min:8',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        if(!Hash::check($request->old_password, auth()->user()->password)) return ["message"=>"old password is wrong"];
         
         $admin = Admin::where("username", auth()->user()->username)->first();
-        $admin->password = Hash::make($request->newpass);
+        $admin->password = Hash::make($request->password);
         $admin->save();
         return ["message"=>"password updated successfully."];
 
