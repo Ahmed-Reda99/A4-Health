@@ -30,7 +30,7 @@ class DoctorController extends Controller
             {
                 $average = array_sum($ratings) / count($ratings);
             }
-            $notAllowedTime = collect($doctor->appointments)->map(function($oneAppointment)
+            $appointments = collect($doctor->appointments)->map(function($oneAppointment)
             {
                 $reservations = Reservation::where('appointment_id',$oneAppointment->id)->get();
                 $Times = array();
@@ -63,8 +63,7 @@ class DoctorController extends Controller
                 'street' => $doctor->street,
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
-                'appointment' => $doctor->appointments,
-                'notAllowedTime' => $notAllowedTime
+                'appointment' => $appointments
             ];
         });    
         return $data;
