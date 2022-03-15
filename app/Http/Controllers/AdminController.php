@@ -152,6 +152,7 @@ class AdminController extends Controller
         $admin = new Admin;
         $admin->username = $request->username;
         $admin->password = Hash::make($request->password);
+        $admin->save();
     }
 
 
