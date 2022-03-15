@@ -12,5 +12,10 @@ class Admin extends Model
     public $timestamps = false;
     protected $primaryKey = "username";
 
+    protected $fillable = [
+        'username',
+        'password'
+    ];
+
     
 }
