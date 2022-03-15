@@ -18,8 +18,8 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('reservation_id');
             $table->primary('invoiceID');
-            $table->foreign('patient_id')->references('id')->on('patients');
-            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+            $table->foreign('reservation_id')->references('id')->on('reservations')->onDelete('cascade');
         });
     }
 
