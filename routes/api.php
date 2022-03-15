@@ -64,6 +64,11 @@ Route::group(['middleware' => 'auth:doctor'], function () {
     Route::get("/doctors/{doctor_id}/reservations", [ReservationController::class, "indexPatients"])->whereNumber('doctor_id','appointment_id');//
     Route::put("/doctors/{doctor_id}/reservations/{reservation_id}", [ReservationController::class, "changeStatus"])->whereNumber('doctor_id','reservation_id');//
     Route::get("/doctors/{doctor_id}/feedback", [FeedbackController::class, "index"])->whereNumber('doctor_id');//
+    Route::get('/doctors/{id}/offers',[OfferController::class,"index"]);
+    Route::post('/doctors/{id}/offers',[OfferController::class,"store"]);
+    Route::put('/doctors/{id}/offers/{offer_id}',[OfferController::class,"update"]);
+    Route::delete('/doctors/{id}/offers/{offer_id}',[OfferController::class,"destroy"]);
+
 });
 
 /////////////////////////////////////////// User routes ///////////////////////////////////////////
@@ -92,6 +97,9 @@ Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]
 
 // Routes for mobile verification in sign up
 
+Route::get("/", function(){
+    return view("verify");
+});
 Route::post("/verify",[UserController::class, "verifyPhone"]);
 Route::delete("/deleteUnverifiedUser/{id}", [UserController::class, "destroy"])->where('id', '[0-9]+'); 
 
