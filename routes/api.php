@@ -132,9 +132,8 @@ Route::get("login",function(){
 // route for logging out
 
 Route::middleware('auth:sanctum')->get('/logout', function(){
-    //Error
 
-    //auth()->user()->currentAccessToken()->delete();
+    auth()->user()->currentAccessToken()->delete();
     return "Logged Out Successfully";
 
 });
