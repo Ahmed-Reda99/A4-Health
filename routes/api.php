@@ -90,6 +90,11 @@ Route::get("/specializations", [SpecializationController::class, "index"]);
 Route::get('/patients/{id}/reservations/{reservation_id}/pay/done',[PaymentController::class,"changeStatus"]);
 Route::get('/patients/reservations/pay/Erorr',[PaymentController::class,"Erorr"]);
 
+// Routes for mobile verification in sign up
+
+Route::post("/verify",[UserController::class, "verifyPhone"]);
+Route::delete("/deleteUnverifiedUser/{id}", [UserController::class, "destroy"])->where('id', '[0-9]+'); 
+
 
 
 
