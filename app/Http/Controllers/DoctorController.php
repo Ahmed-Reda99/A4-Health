@@ -141,6 +141,7 @@ class DoctorController extends Controller
         
         $doctor = Doctor::find($id);
         $data = [
+            'id' => $doctor->id,
             'fname'=>$doctor->user->fname,
             'lname'=>$doctor->user->lname,
             'gender'=>$doctor->user->gender,
