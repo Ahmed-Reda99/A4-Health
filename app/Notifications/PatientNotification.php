@@ -58,7 +58,7 @@ class PatientNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'type'=>'Cancel Appointment',
+            'type'=>'cancel',
             'doctorName'=>$this->newAppointment->doctor->user->fname." ".$this->newAppointment->doctor->user->lname,
             'date'=>$this->newAppointment->date
         ];

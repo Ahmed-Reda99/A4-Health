@@ -192,8 +192,11 @@ class ReservationController extends Controller
         }
         $reservation->status = $request->status;
         $reservation->save();
-        $patient = Patient::find($reservation->patient);
-        Notification::send($patient,new FeedbackNptification($reservation->appointment));
+        if($request->status == "completed")
+        {
+            $patient = Patient::find($reservation->patient);
+            Notification::send($patient,new FeedbackNptification($reservation->appointment));
+        }
         return 
         [
             'response' => "done"

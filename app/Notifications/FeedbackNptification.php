@@ -58,7 +58,7 @@ class FeedbackNptification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'type'=>'Feedback time',
+            'type'=>'feedback',
             'doctorName'=>$this->newAppointment->doctor->user->fname." ".$this->newAppointment->doctor->user->lname,
             'date'=>$this->newAppointment->date
         ];
