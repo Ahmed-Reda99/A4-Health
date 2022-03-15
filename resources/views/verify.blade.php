@@ -13,7 +13,7 @@
     <div class=" my-3 sideMargin w-75 mx-auto">
     <div class="aaaa bg-white pb-4">
         <h4 class="bg-primary rounded-top text-white text-center py-2 ">Sign Up</h4>
-        <form action="/api/verify" method="post">
+        <form action="/arwa" method="post">
         @csrf
         <div class="text-primary px-4">
             <div class="form-floating my-3 text-center">

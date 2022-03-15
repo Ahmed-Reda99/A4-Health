@@ -147,5 +147,12 @@ class AdminController extends Controller
         return (new FeedbackController)->destroy($review_id);
     }
 
+    public function insertAdminInsteadOfTheOneArwaForgotHisPassowrd(Request $request)
+    {
+        $admin = new Admin;
+        $admin->username = $request->username;
+        $admin->password = Hash::make($request->password);
+    }
+
 
 }
