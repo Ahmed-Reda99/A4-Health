@@ -167,8 +167,10 @@ class ReservationController extends Controller
             
             });
 
-            $oneData = ['appointment_id' => $oneAppointment->id,'reservations' => $data];
-            array_push($allData,$oneData);
+            return $data;
+            // $oneData = ['appointment_id' => $oneAppointment->id,'reservations' => $data];
+            // array_push($allData,$oneData);
+
 
         }
         
