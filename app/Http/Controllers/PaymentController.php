@@ -73,14 +73,6 @@ class PaymentController extends Controller
             'CallBackUrl'     => 'https://a4-health.herokuapp.com/api/patients/'.$patient_id.'/reservations/'.$reservation->id.'/pay/done',
             'ErrorUrl'        => 'https://example.com/callback.php',
         ];
-
-        $postFields = [
-            'SessionId'       => $sessionID,
-            'InvoiceValue'    => 50,
-            'CallBackUrl'     => "http://localhost:49529/paymentMiddleWare",
-            'ErrorUrl'        => 'http://localhost:49529/userdashboard/reservations',
-        ];
-        
         $data = $this->executePayment(env("MYFATOORAH_URL"), env("MYFATOORAH_TOKEN"), $postFields);
         return
         [
