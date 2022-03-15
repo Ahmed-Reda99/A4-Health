@@ -40,9 +40,15 @@ class DoctorController extends Controller
                 }
                 return 
                 [
-                    'appointment_id' =>$oneAppointment->id,
-                    'time' => $Times
+                    "id" => $oneAppointment->id,
+                    "start_time" => $oneAppointment->start_time,
+                    "date" => $oneAppointment->date,
+                    "patient_limit" => $oneAppointment->patient_limit,
+                    "examination_time" => $oneAppointment->examination_time,
+                    "doctor_id" => $oneAppointment->doctor_id,
+                    'times' => $Times,
                 ];
+                
             });
             return 
             [
