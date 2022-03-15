@@ -157,10 +157,10 @@ class DoctorController extends Controller
             ]);
             $doctor = $user->doctor;
             $doctor->description = $request->description;
-            $doctor->img_name = $request->img_name;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
             $doctor->fees = $request->fees;
+            $doctor->title = $request->title;
             $doctor->save();
             DB::commit();
             return "updated";
