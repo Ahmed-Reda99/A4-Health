@@ -150,10 +150,8 @@ class DoctorController extends Controller
             $user = (new UserController)->update($request,$id);
             $request->validate([
                 'description'         =>   'bail|required|min:15|max:50',
-                'img_name'            =>   'bail|required|image|mimes:jpeg,pmb,png,jpg|max:88453',
                 'street'              =>   'bail|required|min:3|max:20',
                 'city'                =>   'bail|required|min:4|max:15',
-                'specialization_id'   =>   'bail|required',
                 'fees'                =>   'bail|required|numeric|min:1',
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
