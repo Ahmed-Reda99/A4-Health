@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function routeNotificationForNexmo($notification)
     {
-        return $this->phone->phone;
+        return $this->phone;
         // return '201284145862';
     }
 
