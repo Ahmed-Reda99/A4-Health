@@ -84,7 +84,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->fname = $request->fname;
             $user->lname = $request->lname;
-            $user->phone = $request->phone;
+            $user->phone = '2'.$request->phone;
             $user->save();
             return $user;
 
