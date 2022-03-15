@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +30,20 @@ class DoctorController extends Controller
             {
                 $average = array_sum($ratings) / count($ratings);
             }
+            $notAllowedTime = collect($doctor->appointments)->map(function($oneAppointment)
+            {
+                $reservations = Reservation::where('appointment_id',$oneAppointment->id)->get();
+                $Times = array();
+                foreach($reservations as $oneReservation)
+                {
+                    array_push($Times,$oneReservation->patient_time);
+                }
+                return 
+                [
+                    'appointment_id' =>$oneAppointment->id,
+                    'time' => $Times
+                ];
+            });
             return 
             [
                 'id' => $doctor->id,
@@ -42,7 +57,8 @@ class DoctorController extends Controller
                 'street' => $doctor->street,
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
-                'appointment' => $doctor->appointments
+                'appointment' => $doctor->appointments,
+                'notAllowedTime' => $notAllowedTime
             ];
         });    
         return $data;
