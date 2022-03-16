@@ -72,7 +72,7 @@ class DoctorController extends Controller
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
                 'appointment' => $appointments,
-                'offers' => $offers
+                'offers' => $doctor->offers
             ];
         });    
         return $data;
