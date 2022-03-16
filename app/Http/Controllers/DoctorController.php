@@ -53,10 +53,10 @@ class DoctorController extends Controller
             
             if($doctor->offers == [])
             {
-                $offers = false;
+                $isOffers = false;
             }else
             {
-                $offers = true;
+                $isOffers = true;
             }
             return 
             [
@@ -72,7 +72,7 @@ class DoctorController extends Controller
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
                 'appointment' => $appointments,
-                'offers' => $doctor->offers
+                'offers' => $isOffers
             ];
         });    
         return $data;
