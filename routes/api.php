@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:patient'], function () {
     Route::post('/patients/{id}/reservations',[ReservationController::class,"store"])->whereNumber('id');//
     Route::get('/patients/{id}/reservations',[ReservationController::class,"index"])->whereNumber('id');//
     Route::delete('/patients/{id}/reservations/{reservation_id}',[ReservationController::class,"destroy"])->whereNumber('id','reservation_id');//
+    Route::post('/patients/{id}/feedback',[FeedbackController::class,"store"])->whereNumber('id');//
     
     //payment Route
 

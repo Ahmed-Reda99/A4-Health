@@ -60,6 +60,7 @@ class FeedbackNptification extends Notification
         return [
             'type'=>'feedback',
             'doctorName'=>$this->newAppointment->doctor->user->fname." ".$this->newAppointment->doctor->user->lname,
+            'id'=>$this->newAppointment->doctor->id,
             'date'=>$this->newAppointment->date
         ];
     }

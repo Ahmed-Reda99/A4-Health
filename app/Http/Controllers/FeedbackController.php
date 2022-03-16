@@ -37,9 +37,9 @@ class FeedbackController extends Controller
     }
     
     
-    public function store($patient_id, $appointment_id, $time, Request $request)
+    public function store(Request $request,$patient_id)
     {
-        
+        $patient_id = auth()->guard('patient')->user()->id;
         try {
             
             $request->validate([
@@ -48,7 +48,7 @@ class FeedbackController extends Controller
             
             $feedback = new Feedback;
             $feedback->patient_id = $patient_id;
-            $feedback->doctor_id = Appointment::find($appointment_id)->doctor->id;
+            $feedback->doctor_id = $request->doctor_id;
             $feedback->rate = $request->rate;
             $feedback->message = $request->message;
             $feedback->save();
