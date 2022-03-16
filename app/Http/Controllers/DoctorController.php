@@ -50,8 +50,11 @@ class DoctorController extends Controller
                 ];
                 
             });
-            $offers = false;
-            if($doctor->offers != [])
+            
+            if($doctor->offers == [])
+            {
+                $offers = false;
+            }else
             {
                 $offers = true;
             }
