@@ -51,7 +51,7 @@ class DoctorController extends Controller
                 
             });
             
-            if($doctor->offers == [])
+            if(count($doctor->offers) == 0)
             {
                 $isOffers = false;
             }else
@@ -72,7 +72,7 @@ class DoctorController extends Controller
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
                 'appointment' => $appointments,
-                'offers' => count($doctor->offers)
+                'offers' => $isOffers
             ];
         });    
         return $data;
