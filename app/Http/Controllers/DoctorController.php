@@ -50,6 +50,11 @@ class DoctorController extends Controller
                 ];
                 
             });
+            $offers = false;
+            if($doctor->offers)
+            {
+                $offers = true;
+            }
             return 
             [
                 'id' => $doctor->id,
@@ -63,7 +68,8 @@ class DoctorController extends Controller
                 'street' => $doctor->street,
                 'gender' => $doctor->user->gender,
                 'img_name' => $doctor->img_name,
-                'appointment' => $appointments
+                'appointment' => $appointments,
+                'offers' => $offers
             ];
         });    
         return $data;
