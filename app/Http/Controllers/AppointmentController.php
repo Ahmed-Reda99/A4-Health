@@ -32,7 +32,7 @@ class AppointmentController extends Controller
     
     public function store(Request $request, $doctor_id)
     {
-                
+        // add limit
         try {
 
             $doctor_id = auth()->guard('doctor')->user()->id;

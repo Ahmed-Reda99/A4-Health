@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
+use App\Notifications\ReportAbuseNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class FeedbackController extends Controller
@@ -22,6 +25,7 @@ class FeedbackController extends Controller
         {
             return
             [
+                'id' => $oneFeedback->id,
                 'patientName' => $oneFeedback->patient->user->fname,
                 'rate' => $oneFeedback->rate,
                 'message' => $oneFeedback->message
@@ -91,6 +95,16 @@ class FeedbackController extends Controller
         return 
         [
             'response' => "deleted"
+        ];
+    }
+    public function sendReport($doctor_id,$feedback_id)
+    {
+        $feedback = Feedback::find($feedback_id);
+        $admin = Admin::where("username", 'admin')->first();
+        Notification::send($admin,new ReportAbuseNotification($feedback));
+        return
+        [
+            'response' => 'done'
         ];
     }
 }

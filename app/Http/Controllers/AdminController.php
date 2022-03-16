@@ -155,5 +155,8 @@ class AdminController extends Controller
         $admin->save();
     }
 
-
+    public function displayAllNotifications()
+    {
+        return auth()->guard('admin')->user()->notifications;
+    }
 }

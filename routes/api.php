@@ -71,6 +71,8 @@ Route::group(['middleware' => 'auth:doctor'], function () {
     Route::put('/doctors/{id}/offers/{offer_id}',[OfferController::class,"update"]);
     Route::delete('/doctors/{id}/offers/{offer_id}',[OfferController::class,"destroy"]);
 
+    Route::get("/doctors/{doctor_id}/feedback/{feedback_id}/ReportAbuse", [FeedbackController::class, "sendReport"])->whereNumber('doctor_id');//
+
 });
 
 /////////////////////////////////////////// User routes ///////////////////////////////////////////
@@ -195,6 +197,8 @@ Route::controller(AdminController::class)->middleware('auth:admin')->group(funct
 
     Route::get("/dashboard/reviews", "listAllReviews");
     Route::delete("/dashboard/reviews/{review_id}", "deleteReview");
+
+    Route::get("/dashboard/notifications", [AdminController::class, "displayAllNotifications"]);
 
 });
 
