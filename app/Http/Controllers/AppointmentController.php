@@ -11,6 +11,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Notification;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class AppointmentController extends Controller
 {
@@ -32,13 +35,13 @@ class AppointmentController extends Controller
     
     public function store(Request $request, $doctor_id)
     {
-        // add limit
+                
         try {
 
             $doctor_id = auth()->guard('doctor')->user()->id;
 
             $request->validate([
-                "date"=>"bail|required|date_format:Y-m-d",
+                "start_date"=>"bail|required|date_format:Y-m-d|after_or_equal:today",
                 "start_time"=>Rule::unique('appointments')->where(function ($query){
                 global $request;
                 return $query->where('doctor_id', $request->doctor_id)->where('date', $request->date);
@@ -50,14 +53,49 @@ class AppointmentController extends Controller
                 "examination_time"=>"bail|required|numeric",
                 
             ]);
+
             $appoint = new Appointment;
             $appoint->start_time = $request->start_time;
-            $appoint->date = $request->date;
             $appoint->patient_limit = $request->patient_limit;
             $appoint->examination_time = $request->examination_time;
             $appoint->doctor_id = $doctor_id;
-            $appoint->save();
 
+            if(!$request->end_date)
+            {
+                $appoint->date = $request->start_date;
+                $appoint->save();
+            }
+            else
+            {
+
+                $request->validate([
+                    "end_date"=>"bail|required|date_format:Y-m-d|after_or_equal:start_date"
+                ]);
+
+                $begin = new DateTime($request->start_date);
+                $end = new DateTime($request->end_date);
+                
+                $interval = DateInterval::createFromDateString('1 day');
+                $period = new DatePeriod($begin, $interval, $end);
+                
+                foreach ($period as $dt) {
+
+                    $appoint = new Appointment;
+                    $appoint->start_time = $request->start_time;
+                    $appoint->patient_limit = $request->patient_limit;
+                    $appoint->examination_time = $request->examination_time;
+                    $appoint->doctor_id = $doctor_id;
+                    $appoint->date = $dt;
+                    $appoint->save();
+                }
+                $appoint = new Appointment;
+                    $appoint->start_time = $request->start_time;
+                    $appoint->patient_limit = $request->patient_limit;
+                    $appoint->examination_time = $request->examination_time;
+                    $appoint->doctor_id = $doctor_id;
+                    $appoint->date = $end;
+                    $appoint->save();
+            }
         } catch (ValidationException $e) {
             return
             [
@@ -72,8 +110,10 @@ class AppointmentController extends Controller
     }
 
     
-    // public function show($doctor_id, $appointment_id)
-    // {
+
+    
+    public function show($doctor_id, $appointment_id)
+    {
     //     //check if appointment belongs to this doctor id
     //     $appoint = Appointment::find($appointment_id);
     //     return ["date"=>$appoint->date,
@@ -82,7 +122,7 @@ class AppointmentController extends Controller
     //             "examination_time"=>$appoint->examination_time,
     //             "doctor"=>$appoint->doctor->user->fname ." ". $appoint->doctor->user->lname
     //         ];
-    // }
+    }
 
     
     public function edit($doctor_id, $appointment_id)
