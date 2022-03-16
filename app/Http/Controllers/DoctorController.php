@@ -161,7 +161,8 @@ class DoctorController extends Controller
             'fees'=>$doctor->fees,
             'phone'=>$doctor->user->phone,
             'appointment' => $doctor->appointments,
-            'image' => $this->showImage($id)
+            'offers' => $doctor->offers,
+
 
         ];
         return $data;
