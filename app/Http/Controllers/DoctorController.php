@@ -93,20 +93,22 @@ class DoctorController extends Controller
                 'title'               =>   'bail|required|in:"professor", "lecturer", "consultant", "specialist"'
             ]);
 
+            //enctype="multipart/form-data" MUST
+            $response = cloudinary()->upload($request->file('img_name')->getRealPath())->getSecurePath();
+            // if (request()->hasFile('img_name')) //if user choose file
+            // {
 
-            if (request()->hasFile('img_name')) //if user choose file
-            {
+            //     $file = request()->file('img_name'); //store  uploaded file to variable $file to 
 
-                $file = request()->file('img_name'); //store  uploaded file to variable $file to 
+            //     $extension = $file->getClientOriginalExtension();
+            //     $filename = 'doctor-image' . '_' . time() . '.' . $extension;
+            //     $file->storeAs('public/assets', $filename); //make folder assets in public/storage/assets and put file
 
-                $extension = $file->getClientOriginalExtension();
-                $filename = 'doctor-image' . '_' . time() . '.' . $extension;
-                $file->storeAs('public/assets', $filename); //make folder assets in public/storage/assets and put file
+            // }
 
-            }
 
             $doctor->description = $request->description;
-            $doctor->img_name = $filename;
+            $doctor->img_name = $response;
             $doctor->street = $request->street;
             $doctor->city = $request->city;
             $doctor->specialization_id = $request->specialization_id ;

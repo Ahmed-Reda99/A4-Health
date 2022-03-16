@@ -1,4 +1,15 @@
 <?php return array (
+  'cloudinary-labs/cloudinary-laravel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'CloudinaryLabs\\CloudinaryLaravel\\CloudinaryServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Cloudinary' => 'CloudinaryLabs\\CloudinaryLaravel\\Facades\\Cloudinary',
+    ),
+  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -54,13 +65,6 @@
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    ),
-  ),
-  'laravel/vonage-notification-channel' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Illuminate\\Notifications\\NexmoChannelServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
