@@ -73,9 +73,11 @@ class OfferController extends Controller
         try
         {
             $this->validate($request, [
-                'name' => Rule::unique('offers')->where(function ($query){
+                'name' => Rule::unique('offers')->where(function ($query) use($offer_id){
                     global $request;
-                    return $query->where('doctor_id','=',$request->id );
+                    $old_offer = Offer::find($offer_id);
+                    return $query->where('doctor_id','=',$request->id)
+                    ->where('name','!=',$old_offer->name);
                 })
             ]);
             $newOffer = Offer::find($offer_id);
