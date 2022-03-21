@@ -156,6 +156,26 @@ class DoctorController extends Controller
         
         
         $doctor = Doctor::find($id);
+        $appointments = collect($doctor->appointments)->map(function($oneAppointment)
+        {
+            $reservations = Reservation::where('appointment_id',$oneAppointment->id)->get();
+            $Times = array();
+            foreach($reservations as $oneReservation)
+            {
+                array_push($Times,$oneReservation->patient_time);
+            }
+            return 
+            [
+                "id" => $oneAppointment->id,
+                "start_time" => $oneAppointment->start_time,
+                "date" => $oneAppointment->date,
+                "patient_limit" => $oneAppointment->patient_limit,
+                "examination_time" => $oneAppointment->examination_time,
+                "doctor_id" => $oneAppointment->doctor_id,
+                'reserved_times' => $Times,
+            ];
+            
+        });
         $data = [
             'id' => $doctor->id,
             'fname'=>$doctor->user->fname,
@@ -169,7 +189,7 @@ class DoctorController extends Controller
             'title' => $doctor->title,
             'fees'=>$doctor->fees,
             'phone'=>$doctor->user->phone,
-            'appointment' => $doctor->appointments,
+            'appointment' => $appointments,
             'offers' => $doctor->offers,
 
 
