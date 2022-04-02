@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Reservation;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class PaymentController extends Controller
 {
@@ -146,10 +147,7 @@ class PaymentController extends Controller
         $reservation = Reservation::find($reservation_id);
         $reservation->payment_status = "paied";
         $reservation->save();
-        return 
-        [
-            'data'=>"done"
-        ];
+        return Redirect::to('https://a4-health-a.herokuapp.com/');
     }
 }
 
