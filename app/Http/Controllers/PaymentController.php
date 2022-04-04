@@ -145,7 +145,7 @@ class PaymentController extends Controller
     public function changeStatus($id,$reservation_id)
     {
         $reservation = Reservation::find($reservation_id);
-        $reservation->payment_status = "paied";
+        $reservation->payment_status = "paid";
         $reservation->save();
         return Redirect::to('https://a4-health-a.herokuapp.com/');
     }

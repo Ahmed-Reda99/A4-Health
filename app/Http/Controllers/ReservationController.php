@@ -195,7 +195,7 @@ class ReservationController extends Controller
         $reservation->status = $request->status;
         if($request->status == "completed")
         {
-            $reservation->payment_status = "paied";
+            $reservation->payment_status = "paid";
         }
         $reservation->save();
 

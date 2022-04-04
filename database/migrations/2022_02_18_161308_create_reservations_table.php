@@ -19,7 +19,7 @@ class CreateReservationsTable extends Migration
             $table->time('patient_time');
             $table->unsignedBigInteger('patient_id');
             $table->enum('status', ['pending', 'completed', 'cancelled', 'misssed']);
-            $table->enum('payment_status', ['pending', 'paied']);
+            $table->enum('payment_status', ['pending', 'paid']);
             $table->unique(['appointment_id', 'patient_time']);
             $table->foreign('appointment_id')->references('id')->on('appointments')->onDelete('cascade');
             $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
