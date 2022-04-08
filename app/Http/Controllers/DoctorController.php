@@ -122,6 +122,7 @@ class DoctorController extends Controller
             $doctor->city = $request->city;
             $doctor->specialization_id = $request->specialization_id ;
             $doctor->fees = $request->fees;
+            $doctor->title = $request->title;
             $doctor->save();
     
             DB::commit();
